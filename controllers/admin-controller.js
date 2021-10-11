@@ -1,16 +1,16 @@
-const authService = require('../service/auth-service');
+const adminService = require('../service/admin-service');
 const {validationResult} = require('express-validator');
 const ApiError = require('../exceptions/api-error');
 
-class authController {
-    async registration(req, res, next) {
+class adminController {
+    async news__create(req, res, next) {
         try {
             const errors = validationResult(req);
             if(!errors.isEmpty()) {
                 return next(ApiError.BadRequest(errors.array()[0].msg, errors.array()));
             }
             const {email, password} = req.body;
-            const userData = await authService.registration(email,password);
+            const userData = await adminService.news__create(email,password);
             res.cookie('refreshToken', userData.refreshToken, {maxAge: 30*24*60*60*1000, httpOnly: true});
             return res.json(userData);
         } catch (e) {
@@ -18,7 +18,7 @@ class authController {
         }
     }
 
-    async login(req, res, next) {
+    /*async login(req, res, next) {
         try {
             const errors = validationResult(req);
             if(!errors.isEmpty()) {
@@ -64,7 +64,6 @@ class authController {
             next(e);
         }
     }
-/*
     async getUsers(req, res, next) {
         try {
             const users = await authService.getAllUsers();
@@ -76,4 +75,4 @@ class authController {
     }*/
 }
 
-module.exports = new authController();
+module.exports = new adminController();

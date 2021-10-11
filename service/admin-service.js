@@ -1,4 +1,4 @@
-const UserModel = require('../models/user-model');
+/*const UserModel = require('../models/user-model');*/
 const bcrypt = require('bcrypt');
 const uuid = require('uuid');
 const mailService = require('./mail-service');
@@ -7,8 +7,8 @@ const UserDto = require('../dtos/user-dto');
 const ApiError = require("../exceptions/api-error");
 
 
-class authService {
-    async registration(email, password) {
+class adminService {
+    async news__create(email, password) {
         const candidate = await UserModel.findOne({email});
         if (candidate) {
             throw ApiError.BadRequest(`Пользователь с адресом ${email} уже существует`);
@@ -26,7 +26,7 @@ class authService {
         return {...tokens, user: userDto}
     }
 
-    async activate(activationLink) {
+    /*async activate(activationLink) {
         const user = await UserModel.findOne({activationLink});
         if (!user) {
             throw ApiError.BadRequest('Не коррекктная ссылка активации');
@@ -73,7 +73,6 @@ class authService {
 
         return {...tokens, user: userDto}
     }
-/*
     async getAllUsers() {
         const users = await UserModel.find();
         return users;
@@ -81,4 +80,4 @@ class authService {
 }
 
 
-module.exports = new authService();
+module.exports = new adminService();

@@ -3,7 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
-const authRouter = require('./router/auth-router')
+const authRouter = require('./router/auth-router');
+const adminRouter = require('./router/admin-router');
 const errorMiddleware = require('./middlewares/error-middleware');
 
 const PORT = process.env.PORT || 5000;
@@ -16,6 +17,7 @@ app.use(cors({
     origin:process.env.CLIENT_URL
 }));
 app.use('/api', authRouter);
+app.use('/api', adminRouter);
 app.use(errorMiddleware);
 
 
