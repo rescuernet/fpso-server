@@ -1,10 +1,11 @@
 const NewsModel = require('../models/admin/news/news-model.js');
+const fileService = require('./file-service.js')
 
 
 class adminService {
-    async news__create(arr) {
-        console.log(arr)
-        const news = await NewsModel.create(arr);
+    async news__create(arr,picture) {
+        const fileName = fileService.saveFile(picture)
+        const news = await NewsModel.create({...arr, picture:fileName});
         return news
     }
 

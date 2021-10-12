@@ -6,7 +6,8 @@ const News = new Schema({
     dateEnd: {type:Date},
     headerFirst: {type:String,unique:true,required:true},
     headerSecond: {type:String},
-    textMain: {type: String}
+    textMain: {type: String},
+    picture: {type: String}
 })
 
 module.exports = model('News',News);

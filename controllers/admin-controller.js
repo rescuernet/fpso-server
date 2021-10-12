@@ -5,7 +5,7 @@ const ApiError = require('../exceptions/api-error');
 class adminController {
     async news__create(req, res, next) {
         try {
-            const newsData = await adminService.news__create(req.body);
+            const newsData = await adminService.news__create(req.body,req.files.picture);
             return res.json(newsData);
         } catch (e) {
             next(e);
