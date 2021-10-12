@@ -5,14 +5,8 @@ const ApiError = require('../exceptions/api-error');
 class adminController {
     async news__create(req, res, next) {
         try {
-            const errors = validationResult(req);
-            if(!errors.isEmpty()) {
-                return next(ApiError.BadRequest(errors.array()[0].msg, errors.array()));
-            }
-            const {email, password} = req.body;
-            const userData = await adminService.news__create(email,password);
-            res.cookie('refreshToken', userData.refreshToken, {maxAge: 30*24*60*60*1000, httpOnly: true});
-            return res.json(userData);
+            const newsData = await adminService.news__create(req.body);
+            return res.json(newsData);
         } catch (e) {
             next(e);
         }
