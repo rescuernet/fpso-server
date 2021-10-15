@@ -3,9 +3,8 @@ const fileService = require('./file-service.js')
 
 
 class adminService {
-    async news__create(arr,picture) {
-        const fileName = fileService.saveFile(picture)
-        const news = await NewsModel.create({...arr, picture:fileName});
+    async news__create(arr) {
+        const news = await NewsModel.create(arr);
         return news
     }
 

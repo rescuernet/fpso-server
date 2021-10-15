@@ -3,9 +3,12 @@ const {validationResult} = require('express-validator');
 const ApiError = require('../exceptions/api-error');
 
 class adminController {
+
+    /*async news__avatarCreate()*/
+
     async news__create(req, res, next) {
         try {
-            const newsData = await adminService.news__create(req.body,req.files.picture);
+            const newsData = await adminService.news__create(req.body);
             return res.json(newsData);
         } catch (e) {
             next(e);

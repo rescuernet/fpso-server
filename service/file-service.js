@@ -3,10 +3,10 @@ const path = require('path');
 
 
 class FileService {
-    saveFile(file) {
+    saveFile(file,linkPath) {
         try {
             const fileName = uuid.v4() + '_' + Date.parse(Date()) + '.jpg';
-            const filePath = path.resolve('static',fileName);
+            const filePath = path.resolve('static' + linkPath,fileName);
             file.mv(filePath);
             return fileName;
         } catch (e) {
