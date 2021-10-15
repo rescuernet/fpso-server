@@ -8,6 +8,11 @@ class adminService {
         return news
     }
 
+    async news__avatarCreate(arr) {
+        const news = await NewsModel.create(arr);
+        return news
+    }
+
     /*async activate(activationLink) {
         const user = await UserModel.findOne({activationLink});
         if (!user) {
