@@ -5,7 +5,7 @@ const uploadMiddleware = require('../middlewares/uploadMiddleware');
 
 const router = new Router();
 
-router.post(`${process.env.ADMIN_PATH_PREFIX}/news/avatar-create`,uploadMiddleware.single('files'),adminController.news__avatarCreate);
+router.post(`${process.env.ADMIN_PATH_PREFIX}/news/avatar-create`,uploadMiddleware.single('files'),authMiddleware,adminController.news__avatarCreate);
 router.post(`${process.env.ADMIN_PATH_PREFIX}/news/create`,authMiddleware,adminController.news__create);
 
 

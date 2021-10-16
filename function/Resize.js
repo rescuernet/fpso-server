@@ -6,7 +6,7 @@ class Resize {
     constructor(folder) {
         this.folder = folder;
     }
-    async save(buffer,w,h,name) {
+    async save(buffer,fit,width,height,name) {
         let filename = null;
         if(name){
             filename = name;
@@ -15,9 +15,8 @@ class Resize {
         }
         const filepath = path.resolve(`${this.folder}/`);
         await sharp(buffer)
-            .resize(w, h, {
-                /*fit: sharp.fit.inside,*/
-                fit: sharp.fit.cover
+            .resize(width, height, {
+                fit: fit,
             })
             .toFile(`${filepath}/${filename}`)
         return filename;
