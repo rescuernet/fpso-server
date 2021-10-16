@@ -2,20 +2,19 @@ const adminService = require('../service/admin-service');
 const {validationResult} = require('express-validator');
 const ApiError = require('../exceptions/api-error');
 const path = require('path');
+const Resize = require("../function/Resize");
 
 class adminController {
 
     async news__avatarCreate(req, res, next) {
         try {
-            const imagePath = path.join(__dirname, '/static/tmp');
+            const imagePath = './static/tmp';
             const fileUpload = new Resize(imagePath);
             if (!req.file) {
                 res.status(401).json({error: 'Please provide an image'});
             }
-            const filename = await fileUpload.save(req.file.buffer);
+            const filename = await fileUpload.save(req.file.buffer,340,140,null);
             return res.status(200).json({ name: filename });
-            const avatarData = await adminService.news__avatarCreate(req.body);
-            return res.json(newsData);
         } catch (e) {
             next(e);
         }

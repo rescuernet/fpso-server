@@ -6,13 +6,14 @@ const mongoose = require('mongoose');
 const authRouter = require('./router/auth-router');
 const adminRouter = require('./router/admin-router');
 const errorMiddleware = require('./middlewares/error-middleware');
-const fileupload = require('express-fileupload');
+const bodyParser = require("body-parser");
 
 const PORT = process.env.PORT || 5000;
 const app = express();
 
 app.use(express.json());
-app.use(fileupload({}));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static('static'));
 app.use(cookieParser());
 app.use(cors({
