@@ -1,6 +1,7 @@
 const sharp = require('sharp');
 const uuid = require('uuid');
 const path = require('path');
+const fs = require('fs');
 
 class Resize {
     constructor(folder) {
@@ -19,6 +20,7 @@ class Resize {
                 fit: fit,
             })
             .toFile(`${filepath}/${filename}`)
+        fs.unlinkSync(buffer);
         return filename;
     }
     static filename() {
