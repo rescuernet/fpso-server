@@ -11,21 +11,20 @@ class adminService {
         const news = await NewsModel.create(arr);
         const newsId = news._id;
         const dir = `static/news/${newsId}`
-        const errors = [];
         try {
-            console.log(errors.length)
-            fs.mkdirSync(dir)
-            fs.copyFileSync(`static/tmp/${arr.avatar}`, `${dir}/${arr.avatar}`,(err)=>{if(err) throw err})
+            try {fs.mkdirSync(dir, { recursive: true })} catch (e) {throw e}
+            try {fs.copyFileSync(`static/tmp/${arr.avatar}`, `${dir}/${arr.avatar}`)} catch (e) {throw e}
             const images = arr.images;
             images.map((i)=>{
-                fs.copyFile(`static/tmpa/${i}`, `${dir}/${i}`,(err)=>{if(err) errors.push('errors copy file')})
-                fs.copyFile(`static/tmp/crop_${i}`, `${dir}/crop_${i}`,(err)=>{if(err) throw err})
+                try {fs.copyFileSync(`static/tmp/${i}`, `${dir}/${i}`)} catch (e) {throw e}
+                try {fs.copyFileSync(`static/tmp/crop_${i}`, `${dir}/crop_${i}`)} catch (e) {throw e}
             })
-            console.log(errors.length)
         } catch (e) {
-            return {errors:"ошибка сервера" + e}
-        }
 
+
+
+            return {errors:e.message}
+        }
 
 
         return news
