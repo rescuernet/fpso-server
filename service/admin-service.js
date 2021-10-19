@@ -1,12 +1,36 @@
 const NewsModel = require('../models/admin/news/news-model.js');
-const fileService = require('./file-service.js')
+const fs = require("fs");
 
 
 class adminService {
     async news__create(arr) {
+        const candidate = await NewsModel.findOne({headerFirst:arr.headerFirst});
+        if (candidate) {
+            return {errors:"Новость с таким заголовком уже существует"}
+        }
         const news = await NewsModel.create(arr);
+        const newsId = news._id;
+        const dir = `static/news/${newsId}`
+        const errors = [];
+        try {
+            console.log(errors.length)
+            fs.mkdirSync(dir)
+            fs.copyFileSync(`static/tmp/${arr.avatar}`, `${dir}/${arr.avatar}`,(err)=>{if(err) throw err})
+            const images = arr.images;
+            images.map((i)=>{
+                fs.copyFile(`static/tmpa/${i}`, `${dir}/${i}`,(err)=>{if(err) errors.push('errors copy file')})
+                fs.copyFile(`static/tmp/crop_${i}`, `${dir}/crop_${i}`,(err)=>{if(err) throw err})
+            })
+            console.log(errors.length)
+        } catch (e) {
+            return {errors:"ошибка сервера" + e}
+        }
+
+
+
         return news
     }
+
 
     /*async activate(activationLink) {
         const user = await UserModel.findOne({activationLink});

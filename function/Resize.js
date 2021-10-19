@@ -7,7 +7,7 @@ class Resize {
     constructor(folder) {
         this.folder = folder;
     }
-    async save(buffer,fit,width,height,name) {
+    async save(buffer,fit,width,height,name,del) {
         let filename = null;
         if(name){
             filename = name;
@@ -16,11 +16,12 @@ class Resize {
         }
         const filepath = path.resolve(`${this.folder}/`);
         await sharp(buffer)
+            .rotate()
             .resize(width, height, {
                 fit: fit,
             })
             .toFile(`${filepath}/${filename}`)
-        fs.unlinkSync(buffer);
+        if(del){fs.unlinkSync(buffer)}
         return filename;
     }
     static filename() {

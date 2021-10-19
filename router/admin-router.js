@@ -10,6 +10,13 @@ router.post(`${process.env.ADMIN_PATH_PREFIX}/news/avatar-create`,
     authMiddleware,
     adminController.news__avatarCreate
 );
+
+router.post(`${process.env.ADMIN_PATH_PREFIX}/news/image-create`,
+    imgUpload_MD.single('files'),
+    authMiddleware,
+    adminController.news__imageCreate
+);
+
 router.post(`${process.env.ADMIN_PATH_PREFIX}/news/create`,
     authMiddleware,
     adminController.news__create
