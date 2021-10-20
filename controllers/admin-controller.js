@@ -45,6 +45,15 @@ class adminController {
         }
     }
 
+    async getNews(req, res, next) {
+        try {
+            const newsData = await adminService.getNews();
+            return res.json(newsData);
+        } catch (e) {
+            next(e);
+        }
+    }
+
     /*async login(req, res, next) {
         try {
             const errors = validationResult(req);

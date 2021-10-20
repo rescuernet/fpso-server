@@ -22,5 +22,10 @@ router.post(`${process.env.ADMIN_PATH_PREFIX}/news/create`,
     adminController.news__create
 );
 
+router.get(`${process.env.ADMIN_PATH_PREFIX}/news`,
+    authMiddleware,
+    adminController.getNews
+);
+
 
 module.exports = adminRouter = router;

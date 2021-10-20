@@ -4,31 +4,45 @@ const fs = require("fs");
 
 class adminService {
     async news__create(arr) {
+        const err = [];
+        if(!arr.avatar || arr.dateStart === '' || arr.headerFirst === '' || arr.textMain === ''){
+            err.push('Проверьте обязательные поля: Аватар, Заголовок, Текст новости')
+            return {error:err}
+        }
         const candidate = await NewsModel.findOne({headerFirst:arr.headerFirst});
         if (candidate) {
-            return {errors:"Новость с таким заголовком уже существует"}
+            err.push('Новость с таким заголовком уже существует')
+            return {error:err}
         }
         const news = await NewsModel.create(arr);
         const newsId = news._id;
-        const dir = `static/news/${newsId}`
+        const dir = `static/news/${newsId}`;
         try {
-            try {fs.mkdirSync(dir, { recursive: true })} catch (e) {throw e}
-            try {fs.copyFileSync(`static/tmp/${arr.avatar}`, `${dir}/${arr.avatar}`)} catch (e) {throw e}
+            try {fs.mkdirSync(dir, { recursive: true })} catch (e) {err.push('не создалась директория'); throw e}
+            try {fs.copyFileSync(`static/tmp/${arr.avatar}`, `${dir}/${arr.avatar}`)} catch (e) {err.push('не скопировался аватар'); throw e}
             const images = arr.images;
             images.map((i)=>{
-                try {fs.copyFileSync(`static/tmp/${i}`, `${dir}/${i}`)} catch (e) {throw e}
-                try {fs.copyFileSync(`static/tmp/crop_${i}`, `${dir}/crop_${i}`)} catch (e) {throw e}
+                try {fs.copyFileSync(`static/tmp/${i}`, `${dir}/${i}`)} catch (e) {err.push('не скопировалась фотография'); throw e}
+                try {fs.copyFileSync(`static/tmp/crop_${i}`, `${dir}/crop_${i}`)} catch (e) {err.push('не скопировалась фотография'); throw e}
+            })
+            fs.unlinkSync(`static/tmp/${arr.avatar}`)
+            images.map((i)=>{
+                fs.unlinkSync(`static/tmp/${i}`)
+                fs.unlinkSync(`static/tmp/crop_${i}`)
             })
         } catch (e) {
-
-
-
-            return {errors:e.message}
+            fs.rmdirSync(dir,{ recursive: true })
+            await NewsModel.findByIdAndDelete(newsId)
+            return {error:err}
         }
-
-
         return news
     }
+
+    async getNews() {
+        const news = await NewsModel.find();
+        return news
+    }
+
 
 
     /*async activate(activationLink) {
