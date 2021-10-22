@@ -45,6 +45,15 @@ class adminController {
         }
     }
 
+    async news__update(req, res, next) {
+        try {
+            const newsData = await adminService.news__update(req.body);
+            return res.json(newsData);
+        } catch (e) {
+            next(e);
+        }
+    }
+
     async getNews(req, res, next) {
         try {
             const newsData = await adminService.getNews();

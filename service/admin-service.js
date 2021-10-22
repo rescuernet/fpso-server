@@ -5,106 +5,116 @@ const fs = require("fs");
 class adminService {
     async news__create(arr) {
         const err = [];
-        if(!arr.avatar
+        if (!arr.avatar
             || arr.dateStart === ''
             || arr.headerFirst === ''
             || arr.headerFirst.length < 4
             || arr.textMain === ''
-            || arr.textMain.length < 5)
-        {
+            || arr.textMain.length < 5) {
             err.push(`Проверьте обязательные поля!Аватар (обязательно), Заголовок (не менее 4-х символов), Текст новости (не менее 5-ти символов)`)
-            return {error:err}
+            return {error: err}
         }
-        const candidate = await NewsModel.findOne({headerFirst:arr.headerFirst});
+        const candidate = await NewsModel.findOne({headerFirst: arr.headerFirst});
         if (candidate) {
             err.push('Новость с таким заголовком уже существует')
-            return {error:err}
+            return {error: err}
         }
         const news = await NewsModel.create(arr);
         const newsId = news._id;
         const dir = `static/news/${newsId}`;
         try {
-            try {fs.mkdirSync(dir, { recursive: true })} catch (e) {err.push('не создалась директория новости'); throw e}
-            try {fs.mkdirSync(dir+'/avatar', { recursive: true })} catch (e) {err.push('не создалась директория avatar'); throw e}
-            try {fs.mkdirSync(dir+'/images', { recursive: true })} catch (e) {err.push('не создалась директория images'); throw e}
-            try {fs.copyFileSync(`static/tmp/${arr.avatar}`, `${dir}/avatar/${arr.avatar}`)} catch (e) {err.push('не скопировался аватар'); throw e}
+            try {fs.mkdirSync(dir, {recursive: true})} catch (e) {err.push('не создалась директория новости');throw e}
+            try {fs.mkdirSync(dir + '/avatar', {recursive: true})} catch (e) {err.push('не создалась директория avatar');throw e}
+            try {fs.mkdirSync(dir + '/images', {recursive: true})} catch (e) {err.push('не создалась директория images');throw e}
+            try {fs.copyFileSync(`static/tmp/${arr.avatar}`, `${dir}/avatar/${arr.avatar}`)} catch (e) {err.push('не скопировался аватар');throw e}
             const images = arr.images;
-            images.map((i)=>{
-                try {fs.copyFileSync(`static/tmp/${i}`, `${dir}/images/${i}`)} catch (e) {err.push('не скопировалась фотография'); throw e}
-                try {fs.copyFileSync(`static/tmp/crop_${i}`, `${dir}/images/crop_${i}`)} catch (e) {err.push('не скопировалась фотография'); throw e}
+            images.map((i) => {
+                try {
+                    fs.copyFileSync(`static/tmp/${i}`, `${dir}/images/${i}`)
+                } catch (e) {
+                    err.push('не скопировалась фотография');
+                    throw e
+                }
+                try {
+                    fs.copyFileSync(`static/tmp/crop_${i}`, `${dir}/images/crop_${i}`)
+                } catch (e) {
+                    err.push('не скопировалась фотография');
+                    throw e
+                }
             })
             fs.unlinkSync(`static/tmp/${arr.avatar}`)
-            images.map((i)=>{
+            images.map((i) => {
                 fs.unlinkSync(`static/tmp/${i}`)
                 fs.unlinkSync(`static/tmp/crop_${i}`)
             })
         } catch (e) {
-            fs.rmdirSync(dir,{ recursive: true })
+            fs.rmdirSync(dir, {recursive: true})
             await NewsModel.findByIdAndDelete(newsId)
-            return {error:err}
+            return {error: err}
         }
         return news
     }
 
-    /*async news__update(arr) {
+    async news__update(arr) {
         const err = [];
-        if((!arr.avatarNew || !arr.avatarOld)
-            || arr.dateStart === ''
-            || arr.headerFirst === ''
-            || arr.headerFirst.length < 4
-            || arr.textMain === ''
-            || arr.textMain.length < 5)
-        {
+        if ((!arr.model.avatar)
+            || arr.model.dateStart === ''
+            || arr.model.headerFirst === ''
+            || arr.model.headerFirst.length < 4
+            || arr.model.textMain === ''
+            || arr.model.textMain.length < 5) {
             err.push(`Проверьте обязательные поля!Аватар (обязательно), Заголовок (не менее 4-х символов), Текст новости (не менее 5-ти символов)`)
-            return {error:err}
+            return {error: err}
         }
-        const candidate = await NewsModel.findOne({headerFirst:arr.headerFirst});
-        if (candidate) {
-            err.push('Новость с таким заголовком уже существует')
-            return {error:err}
-        }
-        const news = await NewsModel.create({
-            dateStart: arr.dateStart,
-            dateEnd: arr.dateEnd,
-            headerFirst: arr.headerFirst,
-            headerSecond: arr.headerSecond,
-            textMain: arr.textMain,
-            fixedNews: arr.fixedNews,
-            importantNews: arr.importantNews,
-            published: arr.published,
-            avatar: arr.avatarNew,
-            images: arr.imagesNew
-        });
-        const newsId = news._id;
-        const dir = `static/news/${newsId}`;
+
         try {
-            try {fs.mkdirSync(dir, { recursive: true })} catch (e) {err.push('не создалась директория новости'); throw e}
-            try {fs.mkdirSync(dir+'/avatar', { recursive: true })} catch (e) {err.push('не создалась директория avatar'); throw e}
-            try {fs.mkdirSync(dir+'/images', { recursive: true })} catch (e) {err.push('не создалась директория images'); throw e}
-            try {fs.copyFileSync(`static/tmp/${arr.avatarNew}`, `${dir}/avatar/${arr.avatarNew}`)} catch (e) {err.push('не скопировался аватар'); throw e}
-            const images = arr.imagesNew;
-            images.map((i)=>{
-                try {fs.copyFileSync(`static/tmp/${i}`, `${dir}/images/${i}`)} catch (e) {err.push('не скопировалась фотография'); throw e}
-                try {fs.copyFileSync(`static/tmp/crop_${i}`, `${dir}/images/crop_${i}`)} catch (e) {err.push('не скопировалась фотография'); throw e}
+            const news = await NewsModel.findOneAndUpdate({_id: arr.id}, arr.model);
+
+            //копирование нового аватара и удаление старого
+            if (arr.avatarNew) {
+                try {fs.copyFileSync(`static/tmp/${arr.avatarNew}`, `static/news/${arr.id}/avatar/${arr.avatarNew}`)} catch (e) {err.push('не скопировался аватар');throw e}
+                try {fs.unlinkSync(`static/news/${arr.id}/avatar/${arr.avatarOld}`)} catch (e) {err.push('не удалился старый аватар');throw e}
+                try {fs.unlinkSync(`static/tmp/${arr.avatarNew}`)} catch (e) {err.push('не удалился аватар из TMP');throw e}
+            }
+            const dirImg = `static/news/${arr.id}/images`
+            //удаление ненужных фотографий из папки с новостью
+            const filesOld = fs.readdirSync(dirImg);
+            const imagesOld = arr.imagesOld;
+            filesOld.map((ii) => {
+                if (!imagesOld.includes(ii)) {
+                    if (!imagesOld.includes(ii.substr(5))) {
+                        try {fs.unlinkSync(`${dirImg}/${ii}`)} catch (e) {err.push('не удалилась старая фотография');throw e}
+                    }
+                }
             })
-            fs.unlinkSync(`static/tmp/${arr.avatarNew}`)
-            images.map((i)=>{
-                fs.unlinkSync(`static/tmp/${i}`)
-                fs.unlinkSync(`static/tmp/crop_${i}`)
-            })
+
+            //копирование новых фотографий
+            const imagesNew = arr.imagesNew;
+            if(imagesNew){
+                imagesNew.map((i) => {
+                    try {fs.copyFileSync(`static/tmp/${i}`, `${dirImg}/${i}`)} catch (e) {err.push('не скопировалась фотография');throw e}
+                    try {fs.copyFileSync(`static/tmp/crop_${i}`, `${dirImg}/crop_${i}`)} catch (e) {err.push('не скопировалась фотография crop');throw e}
+                })
+            }
+
+            //удаление новых фотографий из TMP
+            if(imagesNew){
+                imagesNew.map((i) => {
+                    try {fs.unlinkSync(`static/tmp/${i}`)} catch (e) {err.push('не удалилась фотография из TMP');throw e}
+                    try {fs.unlinkSync(`static/tmp/crop_${i}`)} catch (e) {err.push('не удалилась фотография crop из TMP');throw e}
+                })
+            }
+
+            return news;
         } catch (e) {
-            fs.rmdirSync(dir,{ recursive: true })
-            await NewsModel.findByIdAndDelete(newsId)
-            return {error:err}
+            return {error: err}
         }
-        return news
-    }*/
+    }
 
     async getNews() {
         const news = await NewsModel.find({}).sort({dateCreated: -1}).exec();
         return news
     }
-
 
 
     /*async activate(activationLink) {

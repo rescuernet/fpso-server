@@ -22,6 +22,11 @@ router.post(`${process.env.ADMIN_PATH_PREFIX}/news/create`,
     adminController.news__create
 );
 
+router.post(`${process.env.ADMIN_PATH_PREFIX}/news/update`,
+    authMiddleware,
+    adminController.news__update
+);
+
 router.get(`${process.env.ADMIN_PATH_PREFIX}/news`,
     authMiddleware,
     adminController.getNews
