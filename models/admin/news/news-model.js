@@ -1,7 +1,6 @@
 const {Schema,model} = require('mongoose');
 
 const News = new Schema({
-    avatar: {type: String,required:true},
     dateCreated: {type:Date, default: Date.now},
     dateStart: {type:Date, default: Date.now},
     dateEnd: {type:Date},
@@ -10,6 +9,8 @@ const News = new Schema({
     textMain: {type: String,required:true,minlength:5,trim:true},
     fixedNews: {type: Boolean,default:false},
     importantNews: {type: Boolean,default:false},
+    published: {type: Boolean,default:false},
+    avatar: {type: String,required:true},
     images: {type: Object,default:[]}
 })
 
