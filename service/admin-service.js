@@ -5,7 +5,7 @@ const fs = require("fs");
 class adminService {
     async news__create(arr) {
         const err = [];
-        if(!arr.avatarNew
+        if(!arr.avatar
             || arr.dateStart === ''
             || arr.headerFirst === ''
             || arr.headerFirst.length < 4
@@ -20,31 +20,20 @@ class adminService {
             err.push('Новость с таким заголовком уже существует')
             return {error:err}
         }
-        const news = await NewsModel.create({
-            dateStart: arr.dateStart,
-            dateEnd: arr.dateEnd,
-            headerFirst: arr.headerFirst,
-            headerSecond: arr.headerSecond,
-            textMain: arr.textMain,
-            fixedNews: arr.fixedNews,
-            importantNews: arr.importantNews,
-            published: arr.published,
-            avatar: arr.avatarNew,
-            images: arr.imagesNew
-        });
+        const news = await NewsModel.create(arr);
         const newsId = news._id;
         const dir = `static/news/${newsId}`;
         try {
             try {fs.mkdirSync(dir, { recursive: true })} catch (e) {err.push('не создалась директория новости'); throw e}
             try {fs.mkdirSync(dir+'/avatar', { recursive: true })} catch (e) {err.push('не создалась директория avatar'); throw e}
             try {fs.mkdirSync(dir+'/images', { recursive: true })} catch (e) {err.push('не создалась директория images'); throw e}
-            try {fs.copyFileSync(`static/tmp/${arr.avatarNew}`, `${dir}/avatar/${arr.avatarNew}`)} catch (e) {err.push('не скопировался аватар'); throw e}
-            const images = arr.imagesNew;
+            try {fs.copyFileSync(`static/tmp/${arr.avatar}`, `${dir}/avatar/${arr.avatar}`)} catch (e) {err.push('не скопировался аватар'); throw e}
+            const images = arr.images;
             images.map((i)=>{
                 try {fs.copyFileSync(`static/tmp/${i}`, `${dir}/images/${i}`)} catch (e) {err.push('не скопировалась фотография'); throw e}
                 try {fs.copyFileSync(`static/tmp/crop_${i}`, `${dir}/images/crop_${i}`)} catch (e) {err.push('не скопировалась фотография'); throw e}
             })
-            fs.unlinkSync(`static/tmp/${arr.avatarNew}`)
+            fs.unlinkSync(`static/tmp/${arr.avatar}`)
             images.map((i)=>{
                 fs.unlinkSync(`static/tmp/${i}`)
                 fs.unlinkSync(`static/tmp/crop_${i}`)
@@ -57,9 +46,9 @@ class adminService {
         return news
     }
 
-    async news__update(arr) {
+    /*async news__update(arr) {
         const err = [];
-        if(!arr.avatarNew
+        if((!arr.avatarNew || !arr.avatarOld)
             || arr.dateStart === ''
             || arr.headerFirst === ''
             || arr.headerFirst.length < 4
@@ -109,7 +98,7 @@ class adminService {
             return {error:err}
         }
         return news
-    }
+    }*/
 
     async getNews() {
         const news = await NewsModel.find({}).sort({dateCreated: -1}).exec();
