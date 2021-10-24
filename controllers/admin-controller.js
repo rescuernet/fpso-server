@@ -12,7 +12,7 @@ class adminController {
             const imagePath = './static/tmp';
             const fileUpload = new Resize(imagePath);
             if (!req.file) {
-                res.status(401).json({error: 'Please provide an image'});
+                return res.status(401).json({error: 'Please provide an image'});
             }
             const filename = await fileUpload.save(req.file.path,'cover',340,140,null,true);
             return res.status(200).json({ name: filename });
@@ -26,7 +26,7 @@ class adminController {
             const imagePath = './static/tmp';
             const fileUpload = new Resize(imagePath);
             if (!req.file) {
-                res.status(401).json({error: 'Please provide an image'});
+                return res.status(401).json({error: 'Please provide an image'});
             }
             const filename = await fileUpload.save(req.file.path,'inside',1000,1000,null,false);
             await fileUpload.save(req.file.path,'cover',120,120,'crop_' + filename,true);
@@ -34,6 +34,10 @@ class adminController {
         } catch (e) {
             next(e);
         }
+    }
+
+    async news__docsCreate(req, res, next) {
+        console.log(req.file)
     }
 
     async news__create(req, res, next) {
