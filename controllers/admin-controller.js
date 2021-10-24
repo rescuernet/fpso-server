@@ -37,7 +37,7 @@ class adminController {
     }
 
     async news__docsCreate(req, res, next) {
-        console.log(req.file)
+        return res.json({doc: req.file.filename});
     }
 
     async news__create(req, res, next) {
