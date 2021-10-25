@@ -11,7 +11,8 @@ const News = new Schema({
     importantNews: {type: Boolean,default:false},
     published: {type: Boolean,default:false},
     avatar: {type: String,required:true},
-    images: {type: Object,default:[]}
+    images: {type: Object,default:[]},
+    docs: {type: Object,default:[]}
 })
 
 module.exports = model('News',News);

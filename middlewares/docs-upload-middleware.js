@@ -7,7 +7,7 @@ const storage = multer.diskStorage({
         cb(null,'static/tmp/')
     },
     filename(req,file,cb){
-        cb(null,'tmp__' + uuid.v4() + file.originalname.slice(file.originalname.lastIndexOf(".")))
+        cb(null,uuid.v4() + file.originalname.slice(file.originalname.lastIndexOf(".")))
     }
 })
 
