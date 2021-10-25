@@ -53,12 +53,19 @@ class adminService {
                     try {fs.copyFileSync(`static/tmp/${i.doc}`, `${dir}/docs/${i.doc}`)} catch (e) {err.push(`не скопировался документ ${i.doc}`);throw e}
                 })
             }
+
+            const filesOnDirTMP = fs.readdirSync('static/tmp');
+            filesOnDirTMP.map((i)=>{
+                fs.unlinkSync(`static/tmp/${i}`)
+            })
+
+            return news
         } catch (e) {
             fs.rmdirSync(dir, {recursive: true})
             await NewsModel.findByIdAndDelete(newsId)
             return {error: err}
         }
-        return news
+
     }
 
     async news__update(arr) {
