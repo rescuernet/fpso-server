@@ -34,6 +34,11 @@ router.post(`${process.env.ADMIN_PATH_PREFIX}/news/update`,
     adminController.news__update
 );
 
+router.post(`${process.env.ADMIN_PATH_PREFIX}/news/delete`,
+    authMiddleware,
+    adminController.news__delete
+);
+
 router.get(`${process.env.ADMIN_PATH_PREFIX}/news`,
     authMiddleware,
     adminController.getNews

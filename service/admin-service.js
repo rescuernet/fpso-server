@@ -164,6 +164,18 @@ class adminService {
         }
     }
 
+    async news__delete(id) {
+        const err = [];
+        try {
+            try {fs.rmdirSync(`static/news/${id}`, {recursive: true})} catch (e) {err.push('не удалилась папка новости');throw e}
+            const news = await NewsModel.findOneAndDelete({_id: id});
+            return news
+        } catch (e) {
+            return {error: err}
+        }
+
+    }
+
     async getNews() {
         const news = await NewsModel.find({}).sort({dateCreated: -1}).exec();
         return news
