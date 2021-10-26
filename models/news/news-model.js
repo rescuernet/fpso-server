@@ -1,4 +1,5 @@
 const {Schema,model} = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate');
 
 const News = new Schema({
     dateCreated: {type:Date, default: Date.now},
@@ -14,5 +15,7 @@ const News = new Schema({
     images: {type: Object,default:[]},
     docs: {type: Object,default:[]}
 })
+
+News.plugin(mongoosePaginate);
 
 module.exports = model('News',News);

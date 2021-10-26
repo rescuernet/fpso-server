@@ -1,10 +1,28 @@
-const NewsModel = require('../models/admin/news/news-model.js');
+const NewsModel = require('../models/news/news-model.js');
 
 
 class uiService {
 
-    async getNews() {
-        const news = await NewsModel.find({published: true}).sort({dateStart: -1}).exec();
+    async getNews(page) {
+        const query = {
+            published: true,
+            dateStart: {$lte: Date.now()},
+            $or: [
+                {dateEnd: ''},
+                {dateEnd: {$gte: Date.now()}}
+            ],
+        }
+        const options = {
+            page: page,
+            limit: 9,
+            sort: {
+                dateStart: -1,
+                dateCreated: -1,
+            }
+        }
+        const news = await NewsModel.paginate(query, options, function(err, result) {
+            return result
+        });
         return news
     }
 }
