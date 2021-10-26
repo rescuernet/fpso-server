@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const authRouter = require('./router/auth-router');
 const adminRouter = require('./router/admin-router');
+const auiRouter = require('./router/ui-router');
 const errorMiddleware = require('./middlewares/error-middleware');
 const bodyParser = require("body-parser");
 
@@ -22,6 +23,7 @@ app.use(cors({
 }));
 app.use('/api', authRouter);
 app.use('/api', adminRouter);
+app.use('/api', uiRouter);
 app.use(errorMiddleware);
 
 
