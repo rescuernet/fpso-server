@@ -5,13 +5,12 @@ const fs = require("fs");
 class adminService {
     async news__create(arr) {
         const err = [];
-        if (!arr.avatar
-            || arr.dateStart === ''
+        if (arr.dateStart === ''
             || arr.headerFirst === ''
             || arr.headerFirst.length < 4
             || arr.textMain === ''
             || arr.textMain.length < 5) {
-            err.push(`Проверьте обязательные поля!Аватар (обязательно), Заголовок (не менее 4-х символов), Текст новости (не менее 5-ти символов)`)
+            err.push(`Проверьте обязательные поля! Заголовок (не менее 4-х символов), Текст новости (не менее 5-ти символов)`)
         }
 
         if(arr.docs.length > 0){
@@ -39,7 +38,9 @@ class adminService {
             try {fs.mkdirSync(dir + '/avatar', {recursive: true})} catch (e) {err.push('не создалась директория avatar');throw e}
             try {fs.mkdirSync(dir + '/images', {recursive: true})} catch (e) {err.push('не создалась директория images');throw e}
             try {fs.mkdirSync(dir + '/docs', {recursive: true})} catch (e) {err.push('не создалась директория docs');throw e}
-            try {fs.copyFileSync(`static/tmp/${arr.avatar}`, `${dir}/avatar/${arr.avatar}`)} catch (e) {err.push('не скопировался аватар');throw e}
+            if(arr.avatar){
+                try {fs.copyFileSync(`static/tmp/${arr.avatar}`, `${dir}/avatar/${arr.avatar}`)} catch (e) {err.push('не скопировался аватар');throw e}
+            }
             if(arr.images.length > 0){
                 const images = arr.images;
                 images.map((i) => {
@@ -71,13 +72,12 @@ class adminService {
     async news__update(arr) {
 
         const err = [];
-        if ((!arr.model.avatar)
-            || arr.model.dateStart === ''
+        if (arr.model.dateStart === ''
             || arr.model.headerFirst === ''
             || arr.model.headerFirst.length < 4
             || arr.model.textMain === ''
             || arr.model.textMain.length < 5) {
-            err.push(`Проверьте обязательные поля!Аватар (обязательно), Заголовок (не менее 4-х символов), Текст новости (не менее 5-ти символов)`)
+            err.push(`Проверьте обязательные поля! Заголовок (не менее 4-х символов), Текст новости (не менее 5-ти символов)`)
         }
 
         if(arr.docsNew.length > 0){

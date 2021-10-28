@@ -11,7 +11,7 @@ const News = new Schema({
     fixedNews: {type: Boolean,default:false},
     importantNews: {type: Boolean,default:false},
     published: {type: Boolean,default:false},
-    avatar: {type: String,required:true},
+    avatar: {type: String},
     images: {type: Object,default:[]},
     docs: {type: Object,default:[]}
 })

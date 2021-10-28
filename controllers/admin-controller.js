@@ -14,7 +14,7 @@ class adminController {
             if (!req.file) {
                 return res.status(401).json({error: 'Please provide an image'});
             }
-            const filename = await fileUpload.save(req.file.path,'cover',340,140,null,true);
+            const filename = await fileUpload.save(req.file.path,'cover',200,200,null,true);
             return res.status(200).json({ name: filename });
         } catch (e) {
             next(e);
