@@ -149,7 +149,7 @@ class adminService {
             }
 
             //удаление старого аватара
-            if (arr.avatarNew) {
+            if (arr.avatarNew && arr.avatarOld) {
                 try {fs.unlinkSync(`static/news/${arr.id}/avatar/${arr.avatarOld}`)} catch (e) {err.push('не удалился старый аватар');throw e}
             }
 
