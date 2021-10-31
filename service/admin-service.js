@@ -177,7 +177,7 @@ class adminService {
     }
 
     async getNews() {
-        const news = await NewsModel.find({}).sort({dateCreated: -1}).exec();
+        const news = await NewsModel.find({}).sort({dateStart: -1,dateCreated: -1}).exec();
         return news
     }
 
