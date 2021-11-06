@@ -1,5 +1,5 @@
 const Router = require('express').Router;
-const uiNewsController = require('../controllers/ui-news-controller');
+const uiNewsController = require('../../controllers/ui/ui-news-controller');
 
 
 const router = new Router();

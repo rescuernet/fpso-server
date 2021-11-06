@@ -1,4 +1,4 @@
-const uiNewsService = require('../service/ui-news-service');
+const uiNewsService = require('../../service/ui/ui-news-service');
 
 
 class uiNewsController {

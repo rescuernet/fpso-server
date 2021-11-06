@@ -4,8 +4,9 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const authRouter = require('./router/auth-router');
-const adminRouter = require('./router/admin-router');
-const uiNewsRouter = require('./router/ui-news-router');
+const adminNewsRouter = require('./router/admin/admin-news-router');
+const adminCompRouter = require('./router/admin/admin-comp-router');
+const uiNewsRouter = require('./router/ui/ui-news-router');
 const errorMiddleware = require('./middlewares/error-middleware');
 const bodyParser = require("body-parser");
 
@@ -22,7 +23,8 @@ app.use(cors({
     origin:process.env.CLIENT_URL
 }));
 app.use('/api', authRouter);
-app.use('/api', adminRouter);
+app.use('/api', adminNewsRouter);
+app.use('/api', adminCompRouter);
 app.use('/api', uiNewsRouter);
 app.use(errorMiddleware);
 

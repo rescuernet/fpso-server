@@ -1,4 +1,4 @@
-const NewsModel = require('../models/news/news-model.js');
+const NewsModel = require('../../models/news/news-model.js');
 
 
 class uiNewsService {
