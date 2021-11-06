@@ -65,16 +65,7 @@ class authController {
             next(e);
         }
     }
-/*
-    async getUsers(req, res, next) {
-        try {
-            const users = await authService.getAllUsers();
-            console.log(users)
-            return res.json(users);
-        } catch (e) {
-            next(e);
-        }
-    }*/
+
 }
 
 module.exports = new authController();

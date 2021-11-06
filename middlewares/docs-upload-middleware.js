@@ -15,7 +15,7 @@ const limits = {
     fileSize: 10 * 1024 * 1024
 }
 
-const imgTypes = [
+const docsTypes = [
     'application/vnd.ms-excel',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     'application/msword',
@@ -24,7 +24,7 @@ const imgTypes = [
 ]
 
 const fileFilter = (req,file,cb) => {
-    if(imgTypes.includes(file.mimetype)) {
+    if(docsTypes.includes(file.mimetype)) {
         cb(null,true)
     }else{
         cb(null,false)

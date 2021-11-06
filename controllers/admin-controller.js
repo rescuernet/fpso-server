@@ -37,7 +37,11 @@ class adminController {
     }
 
     async news__docsCreate(req, res, next) {
-        return res.json({doc: req.file.filename});
+        try {
+            return res.json({doc: req.file.filename});
+        } catch (e) {
+            next(e);
+        }
     }
 
     async news__create(req, res, next) {

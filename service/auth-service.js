@@ -50,7 +50,6 @@ class authService {
         return {...tokens, user: userDto}
     }
 
-
     async logout(refreshToken) {
         const token = await tokenService.removeToken(refreshToken);
         return token;
@@ -72,11 +71,7 @@ class authService {
 
         return {...tokens, user: userDto}
     }
-/*
-    async getAllUsers() {
-        const users = await UserModel.find();
-        return users;
-    }*/
+
 }
 
 
