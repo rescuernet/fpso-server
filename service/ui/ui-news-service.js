@@ -1,15 +1,16 @@
 const NewsModel = require('../../models/news/news-model.js');
 
+const dateFns = require("date-fns")
 
 class uiNewsService {
 
-    async getNews(page = 1,limit = 9) {
+    async getNews(page = 1,limit = 10) {
         const query = {
             published: true,
-            dateStart: {$lte: Date.now()},
+            dateStart: {$lte: dateFns.format(new Date(Date.now()), 'yyyy-MM-dd')},
             $or: [
                 {dateEnd: ''},
-                {dateEnd: {$gte: Date.now()}}
+                {dateEnd: {$gte: dateFns.format(new Date(Date.now()), 'yyyy-MM-dd')}}
             ],
         }
         const options = {

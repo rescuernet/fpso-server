@@ -2,8 +2,8 @@ const {Schema,model} = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate');
 
 const News = new Schema({
-    dateCreated: {type:Date, default: Date.now},
-    dateStart: {type:Date, default: Date.now},
+    dateCreated: {type:Date, default: Date.now()},
+    dateStart: {type:Date, default: Date.now()},
     dateEnd: {type:Date},
     headerFirst: {type:String,unique:true,required:true,minlength:4,maxlength:255,trim:true},
     headerSecond: {type:String,maxlength:255,trim:true},

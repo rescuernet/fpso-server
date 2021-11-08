@@ -11,13 +11,13 @@ router.post(`${process.env.ADMIN_PATH_PREFIX}/competitions/avatar-create`,
     authMiddleware,
     adminCompController.comp__avatarCreate
 );
-/*
-router.post(`${process.env.ADMIN_PATH_PREFIX}/news/image-create`,
+
+router.post(`${process.env.ADMIN_PATH_PREFIX}/competitions/image-create`,
     imgUpload_MD.single('files'),
     authMiddleware,
-    adminCompController.news__imageCreate
+    adminCompController.comp__imageCreate
 );
-
+/*
 router.post(`${process.env.ADMIN_PATH_PREFIX}/news/docs-create`,
     docsUpload_MD.single('files'),
     authMiddleware,

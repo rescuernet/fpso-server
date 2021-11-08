@@ -14,15 +14,14 @@ class adminCompController {
             if (!req.file) {
                 return res.status(401).json({error: 'Please provide an image'});
             }
-            const filename = await fileUpload.save(req.file.path,'cover',200,200,null,true);
+            const filename = await fileUpload.save(req.file.path,'inside',320,320,null,true);
             return res.status(200).json({ name: filename });
         } catch (e) {
             next(e);
         }
     }
 
-/*
-    async news__imageCreate(req, res, next) {
+    async comp__imageCreate(req, res, next) {
         try {
             const imagePath = './static/tmp';
             const fileUpload = new Resize(imagePath);
@@ -36,6 +35,8 @@ class adminCompController {
             next(e);
         }
     }
+
+    /*
 
     async news__docsCreate(req, res, next) {
         try {
