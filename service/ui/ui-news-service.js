@@ -3,7 +3,10 @@ const NewsModel = require('../../models/news/news-model.js');
 const dateFns = require("date-fns")
 
 class uiNewsService {
-
+    newsModel
+   constructor( NewsModel) {
+        this.newsModel = NewsModel
+   }
     async getNews(page = 1,limit = 10) {
         const query = {
             published: true,
@@ -17,21 +20,20 @@ class uiNewsService {
             page: page,
             limit: limit,
             sort: {
+                fixedNews: -1,
                 dateStart: -1,
                 dateCreated: -1,
             }
         }
-        const news = await NewsModel.paginate(query, options, function(err, result) {
+        return  this.newsModel.paginate(query, options, function(err, result) {
             return result
         });
-        return news
     }
 
     async getNewsId(id) {
-        const news = await NewsModel.findById(id);
-        return news
+        return  this.newsModel.findById(id);
     }
 }
 
 
-module.exports = new uiNewsService();
+module.exports = new uiNewsService(NewsModel);
