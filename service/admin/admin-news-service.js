@@ -3,12 +3,35 @@ const fs = require("fs");
 
 
 class adminNewsService {
-    async news__create(arr) {
+
+    async news__create() {
         const err = [];
+        const news = await NewsModel.create({tmpNews: true});
+        const newsId = news._id;
+        const dir = `static/news/${newsId}`;
+        try {
+            try {fs.mkdirSync(dir, {recursive: true})} catch (e) {err.push('не создалась директория новости');throw e}
+            try {fs.mkdirSync(dir + '/avatar', {recursive: true})} catch (e) {err.push('не создалась директория avatar');throw e}
+            try {fs.mkdirSync(dir + '/images', {recursive: true})} catch (e) {err.push('не создалась директория images');throw e}
+            try {fs.mkdirSync(dir + '/docs', {recursive: true})} catch (e) {err.push('не создалась директория docs');throw e}
+            return newsId
+        } catch (e) {
+            fs.rmdirSync(dir, {recursive: true})
+            await NewsModel.findByIdAndDelete(newsId)
+            return {error: err}
+        }
+
+    }
+
+    async news__update(arr) {
+        const err = [];
+        const candidate = await NewsModel.find({ headerFirst: arr.headerFirst, _id: { $ne:  arr._id } }).lean()
+        if(candidate.length){
+            err.push(`Новость с таким заголовком уже существует`)
+            return {error: err}
+        }
         if (arr.dateStart === ''
-            || arr.headerFirst === ''
             || arr.headerFirst.length < 4
-            || arr.textMain === ''
             || arr.textMain.length < 5) {
             err.push(`Проверьте обязательные поля! Заголовок (не менее 4-х символов), Текст новости (не менее 5-ти символов)`)
         }
@@ -25,137 +48,39 @@ class adminNewsService {
             return {error: err}
         }
 
-        const candidate = await NewsModel.findOne({headerFirst: arr.headerFirst});
-        if (candidate) {
-            err.push('Новость с таким заголовком уже существует')
-            return {error: err}
-        }
-        const news = await NewsModel.create(arr);
-        const newsId = news._id;
-        const dir = `static/news/${newsId}`;
         try {
-            try {fs.mkdirSync(dir, {recursive: true})} catch (e) {err.push('не создалась директория новости');throw e}
-            try {fs.mkdirSync(dir + '/avatar', {recursive: true})} catch (e) {err.push('не создалась директория avatar');throw e}
-            try {fs.mkdirSync(dir + '/images', {recursive: true})} catch (e) {err.push('не создалась директория images');throw e}
-            try {fs.mkdirSync(dir + '/docs', {recursive: true})} catch (e) {err.push('не создалась директория docs');throw e}
-            if(arr.avatar){
-                try {fs.copyFileSync(`static/tmp/${arr.avatar}`, `${dir}/avatar/${arr.avatar}`)} catch (e) {err.push('не скопировался аватар');throw e}
-            }
-            if(arr.images.length > 0){
-                const images = arr.images;
-                images.map((i) => {
-                    try {fs.copyFileSync(`static/tmp/${i}`, `${dir}/images/${i}`)} catch (e) {err.push('не скопировалась фотография');throw e}
-                    try {fs.copyFileSync(`static/tmp/crop_${i}`, `${dir}/images/crop_${i}`)} catch (e) {err.push('не скопировалась фотография');throw e}
-                })
-            }
-            if (arr.docs.length > 0) {
-                const docs = arr.docs;
-                docs.map((i) => {
-                    try {fs.copyFileSync(`static/tmp/${i.doc}`, `${dir}/docs/${i.doc}`)} catch (e) {err.push(`не скопировался документ ${i.doc}`);throw e}
-                })
-            }
+            const news = await NewsModel.findOneAndUpdate({_id: arr._id}, arr);
 
-            const filesOnDirTMP = fs.readdirSync('static/tmp');
-            filesOnDirTMP.map((i)=>{
-                fs.unlinkSync(`static/tmp/${i}`)
-            })
-
-            return news
-        } catch (e) {
-            fs.rmdirSync(dir, {recursive: true})
-            await NewsModel.findByIdAndDelete(newsId)
-            return {error: err}
-        }
-
-    }
-
-    async news__update(arr) {
-
-        const err = [];
-        if (arr.model.dateStart === ''
-            || arr.model.headerFirst === ''
-            || arr.model.headerFirst.length < 4
-            || arr.model.textMain === ''
-            || arr.model.textMain.length < 5) {
-            err.push(`Проверьте обязательные поля! Заголовок (не менее 4-х символов), Текст новости (не менее 5-ти символов)`)
-        }
-
-        if(arr.docsNew.length > 0){
-            arr.docsNew.map((i)=>{
-                if(i.title === ''){
-                    err.push(`Не указано название прикрепленного файла`)
+            //удаление старого аватара
+            const dirAvatar = `static/news/${arr._id}/avatar`
+            const filesOnDirAvatar = fs.readdirSync(dirAvatar);
+            const avatar = arr.avatar;
+            filesOnDirAvatar.map((itemDirAvatar) => {
+                if (!avatar.includes(itemDirAvatar)) {
+                    try {fs.unlinkSync(`${dirAvatar}/${itemDirAvatar}`)} catch (e) {err.push('не удалился старый аватар');throw e}
                 }
             })
-        }
-        if(arr.docsOld.length > 0){
-            arr.docsOld.map((i)=>{
-                if(i.title === ''){
-                    err.push(`Не указано название прикрепленного файла`)
-                }
-            })
-        }
-
-        if(err.length > 0){
-            return {error: err}
-        }
-
-        try {
-            const news = await NewsModel.findOneAndUpdate({_id: arr.id}, arr.model);
-
-            //копирование нового аватара
-            if (arr.avatarNew) {
-                try {fs.copyFileSync(`static/tmp/${arr.avatarNew}`, `static/news/${arr.id}/avatar/${arr.avatarNew}`)} catch (e) {err.push('не скопировался аватар');throw e}
-            }
 
             //удаление ненужных фотографий из папки с новостью
-            const dirImg = `static/news/${arr.id}/images`
+            const dirImg = `static/news/${arr._id}/images`
             const filesOnDirImg = fs.readdirSync(dirImg);
-            const imagesOld = arr.imagesOld;
+            const images = arr.images;
             filesOnDirImg.map((itemDirImg) => {
-                if (!imagesOld.includes(itemDirImg)) {
-                    if (!imagesOld.includes(itemDirImg.substr(5))) {
+                if (!images.includes(itemDirImg)) {
+                    if (!images.includes(itemDirImg.substr(5))) {
                         try {fs.unlinkSync(`${dirImg}/${itemDirImg}`)} catch (e) {err.push('не удалилась старая фотография');throw e}
                     }
                 }
             })
 
-            //копирование новых фотографий
-            if(arr.imagesNew.length > 0){
-                const imagesNew = arr.imagesNew;
-                imagesNew.map((i) => {
-                    try {fs.copyFileSync(`static/tmp/${i}`, `${dirImg}/${i}`)} catch (e) {err.push('не скопировалась фотография');throw e}
-                    try {fs.copyFileSync(`static/tmp/crop_${i}`, `${dirImg}/crop_${i}`)} catch (e) {err.push('не скопировалась фотография crop');throw e}
-                })
-            }
-
-
             //удаление ненужных документов из папки с новостью
-            const dirDocs = `static/news/${arr.id}/docs`
+            const dirDocs = `static/news/${arr._id}/docs`
             const filesOnDirDocs = fs.readdirSync(dirDocs);
-            const docsOld = arr.docsOld.map((i)=>{return i.doc});
-
+            const docs = arr.docs.map((i)=>{return i.doc});
             filesOnDirDocs.map((itemDirDocs) => {
-                if (!docsOld.includes(itemDirDocs)) {
+                if (!docs.includes(itemDirDocs)) {
                     try {fs.unlinkSync(`${dirDocs}/${itemDirDocs}`)} catch (e) {err.push('не удалился старый документ');throw e}
                 }
-            })
-
-            //копирование новых фотографий
-            if(arr.docsNew.length > 0){
-                const docsNew = arr.docsNew;
-                docsNew.map((i) => {
-                    try {fs.copyFileSync(`static/tmp/${i.doc}`, `${dirDocs}/${i.doc}`)} catch (e) {err.push('не скопировался документ');throw e}
-                })
-            }
-
-            //удаление старого аватара
-            if (arr.avatarNew && arr.avatarOld) {
-                try {fs.unlinkSync(`static/news/${arr.id}/avatar/${arr.avatarOld}`)} catch (e) {err.push('не удалился старый аватар');throw e}
-            }
-
-            const filesOnDirTMP = fs.readdirSync('static/tmp');
-            filesOnDirTMP.map((i)=>{
-                fs.unlinkSync(`static/tmp/${i}`)
             })
 
             return news;
@@ -168,8 +93,7 @@ class adminNewsService {
         const err = [];
         try {
             try {fs.rmdirSync(`static/news/${id}`, {recursive: true})} catch (e) {err.push('не удалилась папка новости');throw e}
-            const news = await NewsModel.findOneAndDelete({_id: id});
-            return news
+            return await NewsModel.findOneAndDelete({_id: id})
         } catch (e) {
             return {error: err}
         }
@@ -177,8 +101,19 @@ class adminNewsService {
     }
 
     async getNews() {
-        const news = await NewsModel.find({}).sort({dateStart: -1,dateCreated: -1}).exec();
-        return news
+        const tmpNews = await NewsModel.find({tmpNews: true},'_id')
+        if(tmpNews){
+            tmpNews.map(i=>{
+                const id = i._id.toString()
+                fs.rmdirSync(`static/news/${id}`, {recursive: true})
+            })
+            await NewsModel.deleteMany({tmpNews: true})
+        }
+        return await NewsModel.find({tmpNews: false}).sort({dateStart: -1, dateCreated: -1}).exec()
+    }
+
+    async getNewsId(id) {
+        return NewsModel.findById(id);
     }
 }
 

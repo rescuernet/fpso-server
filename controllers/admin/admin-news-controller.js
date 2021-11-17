@@ -1,6 +1,8 @@
 const adminNewsService = require('../../service/admin/admin-news-service');
 const {validationResult} = require('express-validator');
 const ApiError = require('../../exceptions/api-error');
+const path = require('path');
+const fs = require('fs');
 
 const Resize = require("../../function/Resize");
 
@@ -9,8 +11,7 @@ class adminNewsController {
 
     async news__avatarCreate(req, res, next) {
         try {
-            const imagePath = './static/tmp';
-            const fileUpload = new Resize(imagePath);
+            const fileUpload = new Resize(`./static/news/${req.body.newsId}/avatar`);
             if (!req.file) {
                 return res.status(401).json({error: 'Please provide an image'});
             }
@@ -23,8 +24,7 @@ class adminNewsController {
 
     async news__imageCreate(req, res, next) {
         try {
-            const imagePath = './static/tmp';
-            const fileUpload = new Resize(imagePath);
+            const fileUpload = new Resize(`./static/news/${req.body.newsId}/images`);
             if (!req.file) {
                 return res.status(401).json({error: 'Please provide an image'});
             }
@@ -38,6 +38,11 @@ class adminNewsController {
 
     async news__docsCreate(req, res, next) {
         try {
+            try {
+                fs.renameSync('static/tmp/'+req.file.filename,'static/news/'+req.body.newsId+'/docs/'+req.file.filename)
+            } catch (err) {
+                console.error(err)
+            }
             return res.json({doc: req.file.filename});
         } catch (e) {
             next(e);
@@ -46,7 +51,7 @@ class adminNewsController {
 
     async news__create(req, res, next) {
         try {
-            const newsData = await adminNewsService.news__create(req.body);
+            const newsData = await adminNewsService.news__create();
             return res.json(newsData);
         } catch (e) {
             next(e);
@@ -74,6 +79,15 @@ class adminNewsController {
     async getNews(req, res, next) {
         try {
             const newsData = await adminNewsService.getNews();
+            return res.json(newsData);
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    async getNewsId(req, res, next) {
+        try {
+            const newsData = await adminNewsService.getNewsId(req.params.id);
             return res.json(newsData);
         } catch (e) {
             next(e);

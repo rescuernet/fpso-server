@@ -44,5 +44,10 @@ router.get(`${process.env.ADMIN_PATH_PREFIX}/news`,
     adminNewsController.getNews
 );
 
+router.get(`${process.env.ADMIN_PATH_PREFIX}/news/:id`,
+    authMiddleware,
+    adminNewsController.getNewsId
+);
+
 
 module.exports = adminNewsRouter = router;

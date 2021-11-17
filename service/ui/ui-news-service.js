@@ -8,12 +8,14 @@ class uiNewsService {
         this.newsModel = NewsModel
    }
     async getNews(page = 1,limit = 10) {
+        const date = dateFns.format(new Date(Date.now()), 'yyyy-MM-dd')
         const query = {
             published: true,
-            dateStart: {$lte: dateFns.format(new Date(Date.now()), 'yyyy-MM-dd')},
+            tmpNews: false,
+            dateStart: {$lte: date},
             $or: [
                 {dateEnd: ''},
-                {dateEnd: {$gte: dateFns.format(new Date(Date.now()), 'yyyy-MM-dd')}}
+                {dateEnd: {$gte: date}}
             ],
         }
         const options = {
