@@ -1,12 +1,16 @@
 const NewsModel = require('../../models/news/news-model.js');
 const fs = require("fs");
+const dateFns = require('date-fns')
 
 
 class adminNewsService {
 
     async news__create() {
         const err = [];
-        const news = await NewsModel.create({tmpNews: true});
+        const dateCreated = new Date(Date.now()).toUTCString()
+        const dateStart = dateFns.format(new Date(), 'yyyy-MM-dd')
+
+        const news = await NewsModel.create({dateCreated: dateCreated,dateStart: dateStart,tmpNews: true});
         const newsId = news._id;
         const dir = `static/news/${newsId}`;
         try {
@@ -25,6 +29,7 @@ class adminNewsService {
 
     async news__update(arr) {
         const err = [];
+        console.log(arr)
         const candidate = await NewsModel.find({ headerFirst: arr.headerFirst, _id: { $ne:  arr._id } }).lean()
         if(candidate.length){
             err.push(`Новость с таким заголовком уже существует`)
@@ -109,7 +114,7 @@ class adminNewsService {
             })
             await NewsModel.deleteMany({tmpNews: true})
         }
-        return await NewsModel.find({tmpNews: false}).sort({dateStart: -1, dateCreated: -1}).exec()
+        return NewsModel.find({tmpNews: false}).sort({dateStart: -1, _id: -1}).lean();
     }
 
     async getNewsId(id) {

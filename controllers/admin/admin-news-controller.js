@@ -9,6 +9,15 @@ const Resize = require("../../function/Resize");
 
 class adminNewsController {
 
+    async news__create(req, res, next) {
+        try {
+            const newsData = await adminNewsService.news__create();
+            return res.json(newsData);
+        } catch (e) {
+            next(e);
+        }
+    }
+
     async news__avatarCreate(req, res, next) {
         try {
             const fileUpload = new Resize(`./static/news/${req.body.newsId}/avatar`);
@@ -44,15 +53,6 @@ class adminNewsController {
                 console.error(err)
             }
             return res.json({doc: req.file.filename});
-        } catch (e) {
-            next(e);
-        }
-    }
-
-    async news__create(req, res, next) {
-        try {
-            const newsData = await adminNewsService.news__create();
-            return res.json(newsData);
         } catch (e) {
             next(e);
         }
