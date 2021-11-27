@@ -91,6 +91,18 @@ class adminCompService {
             return {error: err}
         }
     }
+
+    async getComp() {
+        const tmpComp = await CompModel.find({tmp: true},'_id')
+        if(tmpComp){
+            tmpComp.map(i=>{
+                const id = i._id.toString()
+                fs.rmdirSync(`static/competitions/${id}`, {recursive: true})
+            })
+            await CompModel.deleteMany({tmp: true})
+        }
+        return CompModel.find({tmp: false}).sort({dateStart: -1, createdAt: -1}).lean();
+    }
 }
 
 

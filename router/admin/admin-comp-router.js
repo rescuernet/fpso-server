@@ -33,6 +33,11 @@ router.post(`${process.env.ADMIN_PATH_PREFIX}/competitions/update`,
     adminCompController.compUpdate
 );
 
+router.get(`${process.env.ADMIN_PATH_PREFIX}/competitions`,
+    authMiddleware,
+    adminCompController.getComp
+);
+
 
 
 module.exports = adminCompRouter = router;

@@ -18,8 +18,8 @@ class adminCompController {
 
     async getCompId(req, res, next) {
         try {
-            const newsData = await adminCompService.getCompId(req.params.id);
-            return res.json(newsData);
+            const data = await adminCompService.getCompId(req.params.id);
+            return res.json(data);
         } catch (e) {
             next(e);
         }
@@ -54,6 +54,15 @@ class adminCompController {
     async compUpdate(req, res, next) {
         try {
             const data = await adminCompService.compUpdate(req.body);
+            return res.json(data);
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    async getComp(req, res, next) {
+        try {
+            const data = await adminCompService.getComp();
             return res.json(data);
         } catch (e) {
             next(e);
