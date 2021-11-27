@@ -6,43 +6,33 @@ const docsUpload_MD = require('../../middlewares/docs-upload-middleware');
 
 const router = new Router();
 
+router.post(`${process.env.ADMIN_PATH_PREFIX}/competitions/create`,
+    authMiddleware,
+    adminCompController.compCreate
+);
+
+router.get(`${process.env.ADMIN_PATH_PREFIX}/competitions/:id`,
+    authMiddleware,
+    adminCompController.getCompId
+);
+
 router.post(`${process.env.ADMIN_PATH_PREFIX}/competitions/avatar-create`,
     imgUpload_MD.single('files'),
     authMiddleware,
-    adminCompController.comp__avatarCreate
+    adminCompController.compAvatarCreate
 );
 
-router.post(`${process.env.ADMIN_PATH_PREFIX}/competitions/image-create`,
-    imgUpload_MD.single('files'),
-    authMiddleware,
-    adminCompController.comp__imageCreate
-);
-/*
-router.post(`${process.env.ADMIN_PATH_PREFIX}/news/docs-create`,
+router.post(`${process.env.ADMIN_PATH_PREFIX}/competitions/docs-create`,
     docsUpload_MD.single('files'),
     authMiddleware,
-    adminCompController.news__docsCreate
+    adminCompController.compDocsCreate
 );
 
-router.post(`${process.env.ADMIN_PATH_PREFIX}/news/create`,
+router.post(`${process.env.ADMIN_PATH_PREFIX}/competitions/update`,
     authMiddleware,
-    adminCompController.news__create
+    adminCompController.compUpdate
 );
 
-router.post(`${process.env.ADMIN_PATH_PREFIX}/news/update`,
-    authMiddleware,
-    adminCompController.news__update
-);
-
-router.post(`${process.env.ADMIN_PATH_PREFIX}/news/delete`,
-    authMiddleware,
-    adminCompController.news__delete
-);
-
-router.get(`${process.env.ADMIN_PATH_PREFIX}/news`,
-    authMiddleware,
-    adminCompController.getNews
-);*/
 
 
 module.exports = adminCompRouter = router;

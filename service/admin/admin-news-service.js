@@ -6,30 +6,27 @@ const dateFns = require('date-fns')
 class adminNewsService {
 
     async news__create() {
-        const err = [];
-        const dateCreated = new Date(Date.now()).toUTCString()
         const dateStart = dateFns.format(new Date(), 'yyyy-MM-dd')
 
-        const news = await NewsModel.create({dateCreated: dateCreated,dateStart: dateStart,tmpNews: true});
+        const news = await NewsModel.create({dateStart: dateStart,tmpNews: true});
         const newsId = news._id;
         const dir = `static/news/${newsId}`;
         try {
-            try {fs.mkdirSync(dir, {recursive: true})} catch (e) {err.push('не создалась директория новости');throw e}
-            try {fs.mkdirSync(dir + '/avatar', {recursive: true})} catch (e) {err.push('не создалась директория avatar');throw e}
-            try {fs.mkdirSync(dir + '/images', {recursive: true})} catch (e) {err.push('не создалась директория images');throw e}
-            try {fs.mkdirSync(dir + '/docs', {recursive: true})} catch (e) {err.push('не создалась директория docs');throw e}
+            fs.mkdirSync(dir, {recursive: true})
+            fs.mkdirSync(dir + '/avatar', {recursive: true})
+            fs.mkdirSync(dir + '/images', {recursive: true})
+            fs.mkdirSync(dir + '/docs', {recursive: true})
             return newsId
         } catch (e) {
             fs.rmdirSync(dir, {recursive: true})
             await NewsModel.findByIdAndDelete(newsId)
-            return {error: err}
+            return {error: 'error creating news'}
         }
 
     }
 
     async news__update(arr) {
         const err = [];
-        console.log(arr)
         const candidate = await NewsModel.find({ headerFirst: arr.headerFirst, _id: { $ne:  arr._id } }).lean()
         if(candidate.length){
             err.push(`Новость с таким заголовком уже существует`)
@@ -114,7 +111,7 @@ class adminNewsService {
             })
             await NewsModel.deleteMany({tmpNews: true})
         }
-        return NewsModel.find({tmpNews: false}).sort({dateStart: -1, _id: -1}).lean();
+        return NewsModel.find({tmpNews: false}).sort({dateStart: -1, createdAt: -1}).lean();
     }
 
     async getNewsId(id) {
