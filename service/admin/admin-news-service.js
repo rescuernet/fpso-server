@@ -51,6 +51,7 @@ class adminNewsService {
         }
 
         try {
+            arr.tmpNews = false
             const news = await NewsModel.findOneAndUpdate({_id: arr._id}, arr);
 
             //удаление старого аватара

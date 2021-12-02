@@ -24,7 +24,7 @@ class uiNewsService {
             sort: {
                 fixedNews: -1,
                 dateStart: -1,
-                dateCreated: -1,
+                createdAt: -1,
             }
         }
         return  this.newsModel.paginate(query, options, function(err, result) {

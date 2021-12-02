@@ -6,7 +6,7 @@ const router = new Router();
 
 
 router.get(`/news`, uiNewsController.getNews);
-router.get(`/news/:id`, uiNewsController.getNewsId);
+router.get(`/news/view/:id`, uiNewsController.getNewsId);
 
 
 module.exports = uiNewsRouter = router;
