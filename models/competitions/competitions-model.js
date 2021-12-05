@@ -11,6 +11,8 @@ const Competitions = new Schema(
         avatar: {type: String},
         images: {type: Object, default: []},
         docs: {type: Object, default: []},
+        videoTranslation: {type: String},
+        results: {type: Object, default: []},
         published: {type: Boolean, default: false},
         winners: {type: Object},
         tmp: {type: Boolean, default: false}
