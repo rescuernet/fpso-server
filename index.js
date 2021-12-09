@@ -12,7 +12,7 @@ const uiCompRouter = require('./router/ui/ui-comp-router');
 const errorMiddleware = require('./middlewares/error-middleware');
 const bodyParser = require("body-parser");
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 const app = express();
 
 app.use(express.json());
