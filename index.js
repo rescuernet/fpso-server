@@ -22,7 +22,7 @@ app.use(express.static('static'));
 app.use(cookieParser());
 app.use(cors({
     credentials:true,
-    origin:"http://new.samaraswimming.ru"//process.env.CLIENT_URL
+    origin: process.env.CLIENT_URL
 }));
 app.use('/api', authRouter);
 app.use('/api', adminNewsRouter);
@@ -40,7 +40,21 @@ const start = async () => {
             useNewUrlParser: true,
             useUnifiedTopology: true
         })
-        app.listen(PORT,() => console.log(`Server started on port ${PORT}`));
+        app.listen(PORT,() => {
+            console.log(`Server started on port ${PORT}`)
+            console.log(process.env.NODE_ENV)
+            console.log(process.env.CLIENT_URL)
+            console.log(process.env.API_URL)
+            console.log(process.env.DB_URL)
+            console.log(process.env.JWT_ACCESS_SECRET)
+            console.log(process.env.JWT_REFRESH_SECRET)
+            console.log(process.env.SMTP_HOST)
+            console.log(process.env.SMTP_PORT)
+            console.log(process.env.SMTP_USER)
+            console.log(process.env.SMTP_PASSWORD)
+            console.log(process.env.ADMIN_PATH_PREFIX)
+            console.log(process.env.LOGIN_PATH_PREFIX)
+        });
     } catch (e) {
         console.log(e);
     }
