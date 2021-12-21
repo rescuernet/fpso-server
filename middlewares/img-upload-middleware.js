@@ -5,10 +5,6 @@ const fs = require('fs')
 
 const storage = multer.diskStorage({
     destination(req,file,cb){
-        const path = 'static/tmp/'
-        if(!fs.existsSync(path)) {
-            fs.mkdirSync(path, {recursive: true})
-        }
         cb(null,'static/tmp/')
     },
     filename(req,file,cb){
