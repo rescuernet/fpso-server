@@ -11,6 +11,7 @@ const uiNewsRouter = require('./router/ui/ui-news-router');
 const uiCompRouter = require('./router/ui/ui-comp-router');
 const errorMiddleware = require('./middlewares/error-middleware');
 const bodyParser = require("body-parser");
+const fs = require("fs");
 
 const PORT = process.env.PORT || 5000;
 const app = express();
@@ -33,7 +34,20 @@ app.use('/api', uiCompRouter);
 
 app.use(errorMiddleware);
 
+const createDirHandle = () => {
+    const paths =  [
+        'static/tmp/',
+        'static/img/',
+        'static/news/',
+        'static/competitions/',
+    ]
+    paths.forEach(p => {
+        if(!fs.existsSync(p)) {
+            fs.mkdirSync(p, {recursive: true})
+        }
+    })
 
+}
 const start = async () => {
     try {
         await mongoose.connect(process.env.DB_URL,{
@@ -41,6 +55,7 @@ const start = async () => {
             useUnifiedTopology: true
         })
         app.listen(PORT,() => {
+            createDirHandle()
             console.log(`Server started on port ${PORT}`)
             console.log(process.env.NODE_ENV)
             console.log(process.env.CLIENT_URL)
