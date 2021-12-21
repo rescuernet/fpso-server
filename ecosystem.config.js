@@ -2,7 +2,7 @@ module.exports = {
   apps : [
       {
           name: "fpso-server",
-          script: "startscript.js",
+          script: "npm start",
           watch: true,
           env: {
               "PORT": 5000,
