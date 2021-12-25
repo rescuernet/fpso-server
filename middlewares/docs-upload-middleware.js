@@ -2,12 +2,9 @@ const multer = require('multer');
 const uuid = require('uuid');
 
 
-const storage = multer.diskStorage({
-    destination(req,file,cb){
-        cb(null,'static/tmp/')
-    },
-    filename(req,file,cb){
-        cb(null,uuid.v4() + file.originalname.slice(file.originalname.lastIndexOf(".")))
+const storage = multer.memoryStorage({
+    destination: function(req,file,cb){
+        cb(null,'')
     }
 })
 

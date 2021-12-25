@@ -7,25 +7,24 @@ class Resize {
     constructor(folder) {
         this.folder = folder;
     }
-    async save(buffer,fit,width,height,name,del) {
+
+    async save(buffer,fit,width,height,name) {
         let filename = null;
         if(name){
             filename = name;
         }else{
             filename = Resize.filename();
         }
-        const filepath = path.resolve(`${this.folder}/`);
         await sharp(buffer)
             .rotate()
             .resize(width, height, {
                 fit: fit,
             })
-            .toFile(`${filepath}/${filename}`)
-        if(del){fs.unlinkSync(buffer)}
+            .toFile('./static/tmp/' + filename)
         return filename;
     }
     static filename() {
-        return `${uuid.v4()}_${Date.now()}.jpg`;
+        return `${uuid.v4()}.jpg`;
     }
 }
 module.exports = Resize;

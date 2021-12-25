@@ -1,10 +1,9 @@
 const adminNewsService = require('../../service/admin/admin-news-service');
 const {validationResult} = require('express-validator');
 const ApiError = require('../../exceptions/api-error');
-const path = require('path');
-const fs = require('fs');
-
+const UploadYandex = require('../../function/File-upload-yandex')
 const Resize = require("../../function/Resize");
+
 
 
 class adminNewsController {
@@ -20,19 +19,20 @@ class adminNewsController {
 
     async news__avatarCreate(req, res, next) {
         try {
-            const fileUpload = new Resize(`./static/news/${req.body.newsId}/avatar`);
             if (!req.file) {
                 return res.status(401).json({error: 'Please provide an image'});
             }
-            const filename = await fileUpload.save(req.file.path,'cover',200,200,null,true);
-            return res.status(200).json({ name: filename });
+            const fileUpload = new Resize();
+            const filename = await fileUpload.save(req.file.buffer,'cover',200,200,null);
+            const uploadDocs = await UploadYandex.UploadFile('',filename)
+            return res.status(200).json({ name: uploadDocs.Location });
         } catch (e) {
             next(e);
         }
     }
 
     async news__imageCreate(req, res, next) {
-        try {
+        /*try {
             const fileUpload = new Resize(`./static/news/${req.body.newsId}/images`);
             if (!req.file) {
                 return res.status(401).json({error: 'Please provide an image'});
@@ -42,17 +42,13 @@ class adminNewsController {
             return res.status(200).json({ name: filename });
         } catch (e) {
             next(e);
-        }
+        }*/
     }
 
     async news__docsCreate(req, res, next) {
         try {
-            try {
-                fs.renameSync('static/tmp/'+req.file.filename,'static/news/'+req.body.newsId+'/docs/'+req.file.filename)
-            } catch (err) {
-                console.error(err)
-            }
-            return res.json({doc: req.file.filename});
+            const uploadDocs = await UploadYandex.UploadFile(req.file)
+            return res.json({doc: uploadDocs.Location});
         } catch (e) {
             next(e);
         }

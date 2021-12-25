@@ -34,20 +34,6 @@ app.use('/api', uiCompRouter);
 
 app.use(errorMiddleware);
 
-const createDirHandle = () => {
-    const paths =  [
-        'static/tmp/',
-        'static/img/',
-        'static/news/',
-        'static/competitions/',
-    ]
-    paths.forEach(p => {
-        if(!fs.existsSync(p)) {
-            fs.mkdirSync(p, {recursive: true})
-        }
-    })
-
-}
 const start = async () => {
     try {
         await mongoose.connect(process.env.DB_URL,{
@@ -55,20 +41,7 @@ const start = async () => {
             useUnifiedTopology: true
         })
         app.listen(PORT,() => {
-            createDirHandle()
             console.log(`Server started on port ${PORT}`)
-            console.log(process.env.NODE_ENV)
-            console.log(process.env.CLIENT_URL)
-            console.log(process.env.API_URL)
-            console.log(process.env.DB_URL)
-            console.log(process.env.JWT_ACCESS_SECRET)
-            console.log(process.env.JWT_REFRESH_SECRET)
-            console.log(process.env.SMTP_HOST)
-            console.log(process.env.SMTP_PORT)
-            console.log(process.env.SMTP_USER)
-            console.log(process.env.SMTP_PASSWORD)
-            console.log(process.env.ADMIN_PATH_PREFIX)
-            console.log(process.env.LOGIN_PATH_PREFIX)
         });
     } catch (e) {
         console.log(e);

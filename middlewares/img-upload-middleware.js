@@ -3,12 +3,9 @@ const uuid = require('uuid');
 const fs = require('fs')
 
 
-const storage = multer.diskStorage({
-    destination(req,file,cb){
-        cb(null,'static/tmp/')
-    },
-    filename(req,file,cb){
-        cb(null,'tmp__' + uuid.v4() + '-' + file.originalname)
+const storage = multer.memoryStorage({
+    destination: function(req,file,cb){
+        cb(null,'')
     }
 })
 
@@ -25,5 +22,6 @@ const fileFilter = (req,file,cb) => {
         cb(null,false)
     }
 }
+
 
 module.exports = multer({storage,fileFilter,limits});
