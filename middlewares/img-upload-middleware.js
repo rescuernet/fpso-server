@@ -13,7 +13,7 @@ const limits = {
     fileSize: 4 * 1024 * 1024
 }
 
-const imgTypes = ['image/png','image/jpeg','image/jpg']
+const imgTypes = ['image/jpeg','image/jpg']
 
 const fileFilter = (req,file,cb) => {
     if(imgTypes.includes(file.mimetype)) {
