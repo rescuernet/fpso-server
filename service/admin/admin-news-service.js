@@ -72,7 +72,6 @@ class adminNewsService {
                 DeleteYandex.DeleteFile(i)
             })
         }
-
     }
 
     async getNews() {
