@@ -9,19 +9,4 @@ const storage = multer.memoryStorage({
     }
 })
 
-const limits = {
-    fileSize: 4 * 1024 * 1024
-}
-
-const imgTypes = ['image/jpeg','image/jpg']
-
-const fileFilter = (req,file,cb) => {
-    if(imgTypes.includes(file.mimetype)) {
-        cb(null,true)
-    }else{
-        cb(null,false)
-    }
-}
-
-
-module.exports = multer({storage,fileFilter,limits});
+module.exports = multer({storage});

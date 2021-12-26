@@ -1,16 +1,17 @@
 const EasyYandexS3 = require("easy-yandex-s3");
 const uuid = require('uuid');
 const path = require("path");
+const constKeys = require('../const-keys/const-keys')
 
 class UploadYandex {
     EYS3;
     constructor() {
         this.EYS3  = new EasyYandexS3({
             auth: {
-                accessKeyId: '9U-3r2bm48XZEm5O8aXZ',
-                secretAccessKey: 'onmLZNU3ZiaEobJZlfD3AMipUjQjFtDQVXB-QRxT',
+                accessKeyId: constKeys.YANDEX.accessKeyId,
+                secretAccessKey: constKeys.YANDEX.secretAccessKey,
             },
-            Bucket: "fpso-public",
+            Bucket: constKeys.YANDEX.BucketPublic,
             debug: false,
         });
     }
@@ -19,7 +20,7 @@ class UploadYandex {
         if(buffer.originalname){
             return await this.EYS3.Upload({
                 buffer: buffer.buffer,
-                name: 'fpso' + uuid.v4() + buffer.originalname.slice(buffer.originalname.lastIndexOf("."))
+                name: uuid.v4() + '-' + Date.now() + buffer.originalname.slice(buffer.originalname.lastIndexOf("."))
             }, "/")
         }else{
             return await this.EYS3.Upload({

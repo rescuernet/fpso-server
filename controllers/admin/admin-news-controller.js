@@ -3,6 +3,7 @@ const {validationResult} = require('express-validator');
 const ApiError = require('../../exceptions/api-error');
 const UploadYandex = require('../../function/File-upload-yandex')
 const Resize = require("../../function/Resize");
+const checkUpload = require("../../function/check-upload");
 
 
 
@@ -18,39 +19,51 @@ class adminNewsController {
     }
 
     async news__avatarCreate(req, res, next) {
-        try {
-            if (!req.file) {
-                return res.status(401).json({error: 'Please provide an image'});
+        const checkFile = checkUpload.checkUploadFile(req.file, 'image')
+        if(checkFile === 200){
+            try {
+                const fileUpload = new Resize();
+                const filename = await fileUpload.save(req.file.buffer,'cover',200,200,null);
+                const uploadDocs = await UploadYandex.UploadFile('',filename)
+                return res.status(200).json({ name: uploadDocs.key });
+            } catch (e) {
+                next(e);
             }
-            const fileUpload = new Resize();
-            const filename = await fileUpload.save(req.file.buffer,'cover',200,200,null);
-            const uploadDocs = await UploadYandex.UploadFile('',filename)
-            return res.status(200).json({ name: uploadDocs.Location });
-        } catch (e) {
-            next(e);
+        }else{
+            return res.status(401).json({error: 'Ошибка загрузки'});
         }
+
     }
 
     async news__imageCreate(req, res, next) {
-        /*try {
-            const fileUpload = new Resize(`./static/news/${req.body.newsId}/images`);
-            if (!req.file) {
-                return res.status(401).json({error: 'Please provide an image'});
+        const checkFile = checkUpload.checkUploadFile(req.file, 'image')
+        if(checkFile === 200){
+            try {
+                const fileUpload = new Resize();
+                const filename = await fileUpload.save(req.file.buffer,'inside',1000,1000,null);
+                const uploadDocs = await UploadYandex.UploadFile('',filename)
+                const cropFileName = await fileUpload.save(req.file.buffer,'cover',120,120,'crop_' + filename);
+                await UploadYandex.UploadFile('',cropFileName)
+                return res.status(200).json({ name: uploadDocs.key });
+            } catch (e) {
+                next(e);
             }
-            const filename = await fileUpload.save(req.file.path,'inside',1000,1000,null,false);
-            await fileUpload.save(req.file.path,'cover',120,120,'crop_' + filename,true);
-            return res.status(200).json({ name: filename });
-        } catch (e) {
-            next(e);
-        }*/
+        }else{
+            return res.status(401).json({error: 'Ошибка загрузки'});
+        }
     }
 
     async news__docsCreate(req, res, next) {
-        try {
-            const uploadDocs = await UploadYandex.UploadFile(req.file)
-            return res.json({doc: uploadDocs.Location});
-        } catch (e) {
-            next(e);
+        const checkFile = checkUpload.checkUploadFile(req.file, 'docs')
+        if(checkFile === 200){
+            try {
+                const uploadDocs = await UploadYandex.UploadFile(req.file)
+                return res.json({doc: uploadDocs.key});
+            } catch (e) {
+                next(e);
+            }
+        }else{
+            return res.status(401).json({error: 'Ошибка загрузки'});
         }
     }
 

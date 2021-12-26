@@ -24,7 +24,7 @@ class Resize {
         return filename;
     }
     static filename() {
-        return `${uuid.v4()}.jpg`;
+        return `${uuid.v4()}-${Date.now()}.jpg`;
     }
 }
 module.exports = Resize;
