@@ -8,6 +8,7 @@ class uiNewsController {
         const limit = parseInt(req.query.limit)
         try {
             const newsData = await uiNewsService.getNews(page,limit);
+            console.log('newsData',newsData)
             return res.json(newsData);
         } catch (e) {
             next(e);
