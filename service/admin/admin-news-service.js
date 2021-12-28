@@ -8,7 +8,6 @@ class adminNewsService {
 
     async news__create() {
         const dateStart = dateFns.format(new Date(), 'yyyy-MM-dd')
-
         const news = await NewsModel.create({dateStart: dateStart,tmpNews: true});
         return news._id;
     }
@@ -75,14 +74,7 @@ class adminNewsService {
     }
 
     async getNews() {
-        const tmpNews = await NewsModel.find({tmpNews: true},'_id')
-        if(tmpNews){
-            tmpNews.map(i=>{
-                const id = i._id.toString()
-                fs.rmdirSync(`static/news/${id}`, {recursive: true})
-            })
-            await NewsModel.deleteMany({tmpNews: true})
-        }
+        await NewsModel.deleteMany({tmpNews: true})
         return NewsModel.find({tmpNews: false}).sort({dateStart: -1, createdAt: -1}).lean();
     }
 

@@ -2,6 +2,8 @@ const adminCompService = require('../../service/admin/admin-comp-service');
 const {validationResult} = require('express-validator');
 const ApiError = require('../../exceptions/api-error');
 const Resize = require("../../function/Resize");
+const UploadYandex = require('../../function/File-upload-yandex')
+const checkUpload = require("../../function/check-upload");
 const fs = require("fs");
 
 
@@ -26,28 +28,32 @@ class adminCompController {
     }
 
     async compAvatarCreate(req, res, next) {
-        try {
-            const fileUpload = new Resize(`./static/competitions/${req.body.compId}/avatar`);
-            if (!req.file) {
-                return res.status(401).json({error: 'Please provide an image'});
+        const checkFile = checkUpload.checkUploadFile(req.file, 'image')
+        if(checkFile === 200){
+            try {
+                const fileUpload = new Resize();
+                const filename = await fileUpload.save(req.file.buffer,'cover',300,300,null);
+                const uploadDocs = await UploadYandex.UploadFile('',filename)
+                return res.status(200).json({ name: uploadDocs.key });
+            } catch (e) {
+                next(e);
             }
-            const filename = await fileUpload.save(req.file.path,'cover',300,250,null,true);
-            return res.status(200).json({ name: filename });
-        } catch (e) {
-            next(e);
+        }else{
+            return res.status(401).json({error: 'Ошибка загрузки'});
         }
     }
 
     async compDocsCreate(req, res, next) {
-        try {
+        const checkFile = checkUpload.checkUploadFile(req.file, 'docs')
+        if(checkFile === 200){
             try {
-                fs.renameSync('static/tmp/'+req.file.filename,'static/competitions/'+req.body.compId+'/docs/'+req.file.filename)
-            } catch (err) {
-                console.error(err)
+                const uploadDocs = await UploadYandex.UploadFile(req.file)
+                return res.json({doc: uploadDocs.key});
+            } catch (e) {
+                next(e);
             }
-            return res.json({doc: req.file.filename});
-        } catch (e) {
-            next(e);
+        }else{
+            return res.status(401).json({error: 'Ошибка загрузки'});
         }
     }
 

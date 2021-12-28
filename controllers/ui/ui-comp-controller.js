@@ -8,7 +8,6 @@ class uiCompController {
         const limit = parseInt(req.query.limit)
         try {
             const data = await uiCompService.getComp(page,limit);
-            console.log('comp',data)
             return res.json(data);
         } catch (e) {
             next(e);

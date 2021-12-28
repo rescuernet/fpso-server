@@ -6,6 +6,16 @@ const docsUpload_MD = require('../../middlewares/docs-upload-middleware');
 
 const router = new Router();
 
+router.post(`${process.env.ADMIN_PATH_PREFIX}/news/create`,
+    authMiddleware,
+    adminNewsController.news__create
+);
+
+router.get(`${process.env.ADMIN_PATH_PREFIX}/news/:id`,
+    authMiddleware,
+    adminNewsController.getNewsId
+);
+
 router.post(`${process.env.ADMIN_PATH_PREFIX}/news/avatar-create`,
     imgUpload_MD.single('files'),
     authMiddleware,
@@ -24,10 +34,7 @@ router.post(`${process.env.ADMIN_PATH_PREFIX}/news/docs-create`,
     adminNewsController.news__docsCreate
 );
 
-router.post(`${process.env.ADMIN_PATH_PREFIX}/news/create`,
-    authMiddleware,
-    adminNewsController.news__create
-);
+
 
 router.post(`${process.env.ADMIN_PATH_PREFIX}/news/update`,
     authMiddleware,
@@ -44,10 +51,7 @@ router.get(`${process.env.ADMIN_PATH_PREFIX}/news`,
     adminNewsController.getNews
 );
 
-router.get(`${process.env.ADMIN_PATH_PREFIX}/news/:id`,
-    authMiddleware,
-    adminNewsController.getNewsId
-);
+
 
 
 module.exports = adminNewsRouter = router;

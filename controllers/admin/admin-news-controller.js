@@ -6,7 +6,6 @@ const Resize = require("../../function/Resize");
 const checkUpload = require("../../function/check-upload");
 
 
-
 class adminNewsController {
 
     async news__create(req, res, next) {
@@ -32,7 +31,6 @@ class adminNewsController {
         }else{
             return res.status(401).json({error: 'Ошибка загрузки'});
         }
-
     }
 
     async news__imageCreate(req, res, next) {
