@@ -1,7 +1,7 @@
 const NewsModel = require('../../models/news/news-model.js');
 const fs = require("fs");
 const dateFns = require('date-fns')
-const DeleteYandex = require('../../function/File-delete-yandex')
+const Yandex = require('../../function/file-cloud')
 
 
 class adminNewsService {
@@ -43,7 +43,7 @@ class adminNewsService {
 
             if(arr.mediaDel && arr.mediaDel.length > 0){
                 arr.mediaDel.map((i)=>{
-                    DeleteYandex.DeleteFile(i)
+                    Yandex.DeleteFile(i)
                 })
             }
 
@@ -68,7 +68,7 @@ class adminNewsService {
 
         if(mediaDel && mediaDel.length > 0){
             mediaDel.map((i)=>{
-                DeleteYandex.DeleteFile(i)
+                Yandex.DeleteFile(i)
             })
         }
     }

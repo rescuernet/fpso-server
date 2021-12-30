@@ -1,7 +1,7 @@
 const adminNewsService = require('../../service/admin/admin-news-service');
 const {validationResult} = require('express-validator');
 const ApiError = require('../../exceptions/api-error');
-const UploadYandex = require('../../function/File-upload-yandex')
+const Yandex = require('../../function/file-cloud')
 const Resize = require("../../function/Resize");
 const checkUpload = require("../../function/check-upload");
 
@@ -23,7 +23,7 @@ class adminNewsController {
             try {
                 const fileUpload = new Resize();
                 const filename = await fileUpload.save(req.file.buffer,'cover',200,200,null);
-                const uploadDocs = await UploadYandex.UploadFile('',filename)
+                const uploadDocs = await Yandex.UploadFile('',filename)
                 return res.status(200).json({ name: uploadDocs.key });
             } catch (e) {
                 next(e);
@@ -39,9 +39,9 @@ class adminNewsController {
             try {
                 const fileUpload = new Resize();
                 const filename = await fileUpload.save(req.file.buffer,'inside',1000,1000,null);
-                const uploadDocs = await UploadYandex.UploadFile('',filename)
+                const uploadDocs = await Yandex.UploadFile('',filename)
                 const cropFileName = await fileUpload.save(req.file.buffer,'cover',120,120,'crop_' + filename);
-                await UploadYandex.UploadFile('',cropFileName)
+                await Yandex.UploadFile('',cropFileName)
                 return res.status(200).json({ name: uploadDocs.key });
             } catch (e) {
                 next(e);
@@ -55,7 +55,7 @@ class adminNewsController {
         const checkFile = checkUpload.checkUploadFile(req.file, 'docs')
         if(checkFile === 200){
             try {
-                const uploadDocs = await UploadYandex.UploadFile(req.file)
+                const uploadDocs = await Yandex.UploadFile(req.file)
                 return res.json({doc: uploadDocs.key});
             } catch (e) {
                 next(e);

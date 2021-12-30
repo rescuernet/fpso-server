@@ -1,7 +1,7 @@
 const CompModel = require('../../models/competitions/competitions-model.js');
 const fs = require("fs");
 const dateFns = require("date-fns");
-const DeleteYandex = require("../../function/File-delete-yandex");
+const Yandex = require("../../function/file-cloud");
 
 
 class adminCompService {
@@ -46,7 +46,7 @@ class adminCompService {
 
             if(arr.mediaDel && arr.mediaDel.length > 0){
                 arr.mediaDel.map((i)=>{
-                    DeleteYandex.DeleteFile(i)
+                    Yandex.DeleteFile(i)
                 })
             }
 

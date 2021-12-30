@@ -2,9 +2,8 @@ const adminCompService = require('../../service/admin/admin-comp-service');
 const {validationResult} = require('express-validator');
 const ApiError = require('../../exceptions/api-error');
 const Resize = require("../../function/Resize");
-const UploadYandex = require('../../function/File-upload-yandex')
+const Yandex = require('../../function/file-cloud')
 const checkUpload = require("../../function/check-upload");
-const fs = require("fs");
 
 
 class adminCompController {
@@ -33,7 +32,7 @@ class adminCompController {
             try {
                 const fileUpload = new Resize();
                 const filename = await fileUpload.save(req.file.buffer,'cover',300,300,null);
-                const uploadDocs = await UploadYandex.UploadFile('',filename)
+                const uploadDocs = await Yandex.UploadFile('',filename)
                 return res.status(200).json({ name: uploadDocs.key });
             } catch (e) {
                 next(e);
@@ -47,7 +46,7 @@ class adminCompController {
         const checkFile = checkUpload.checkUploadFile(req.file, 'docs')
         if(checkFile === 200){
             try {
-                const uploadDocs = await UploadYandex.UploadFile(req.file)
+                const uploadDocs = await Yandex.UploadFile(req.file)
                 return res.json({doc: uploadDocs.key});
             } catch (e) {
                 next(e);

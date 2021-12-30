@@ -3,7 +3,7 @@ const uuid = require('uuid');
 const path = require("path");
 const constKeys = require('../const-keys/const-keys')
 
-class UploadYandex {
+class Yandex {
     EYS3;
     constructor() {
         this.EYS3  = new EasyYandexS3({
@@ -29,7 +29,12 @@ class UploadYandex {
             }, "/")
         }
     }
+
+    async DeleteFile (filename) {
+        await this.EYS3.Remove(filename);
+        await this.EYS3.Remove('crop_' + filename);
+    }
 }
 
-module.exports = new UploadYandex();
+module.exports = new Yandex();
 
