@@ -13,43 +13,28 @@ class adminNewsService {
     }
 
     async news__update(arr) {
-        const err = [];
+        if(arr.data.dateStart === '') return {error: 'Не указана дата старта новости'}
+        if(!arr.data.headerFirst) return {error: 'Нет заголовка новости'}
+        if(arr.data.headerFirst.length < 4) return {error: 'Минимальная длина заголовка новости 4 символа'}
+        if(!arr.data.textMain) return {error: 'Нет текста новости'}
+        if(arr.data.textMain && arr.data.textMain.length < 5) return {error: 'Минимальная длина текста новости 5 символов'}
         const candidate = await NewsModel.find({ headerFirst: arr.data.headerFirst, _id: { $ne:  arr.data._id } }).lean()
-        if(candidate.length){
-            err.push(`Новость с таким заголовком уже существует`)
-            return {error: err}
-        }
-        if (arr.data.dateStart === ''
-            || arr.data.headerFirst.length < 4
-            || arr.data.textMain.length < 5) {
-            err.push(`Проверьте обязательные поля! Заголовок (не менее 4-х символов), Текст новости (не менее 5-ти символов)`)
-        }
+        if(candidate.length) return {error: 'Новость с таким заголовком уже существует'}
 
         if(arr.data.docs.length > 0){
             arr.data.docs.map((i)=>{
-                if(i.title === ''){
-                    err.push(`Не указано название прикрепленного файла`)
-                }
+                if(i.title === '') return {error: 'Не указано название прикрепленного файла'}
             })
         }
 
-        if(err.length > 0){
-            return {error: err}
-        }
-
         try {
-            arr.data.tmpNews = false
-            const news = await NewsModel.findOneAndUpdate({_id: arr.data._id}, arr.data);
-
             if(arr.mediaDel && arr.mediaDel.length > 0){
-                arr.mediaDel.map((i)=>{
-                    Yandex.DeleteFile(i)
-                })
+                Yandex.DeleteFile(arr.mediaDel)
             }
-
-            return news;
+            arr.data.tmpNews = false
+            return await NewsModel.findOneAndUpdate({_id: arr.data._id}, arr.data);
         } catch (e) {
-            return {error: err}
+            return {error: `Что-то пошло не так... Обратитесь к разработчику. ${e}`}
         }
     }
 
@@ -67,9 +52,7 @@ class adminNewsService {
         await NewsModel.findOneAndDelete({_id: id})
 
         if(mediaDel && mediaDel.length > 0){
-            mediaDel.map((i)=>{
-                Yandex.DeleteFile(i)
-            })
+            Yandex.DeleteFile(mediaDel)
         }
     }
 

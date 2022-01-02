@@ -30,9 +30,12 @@ class Yandex {
         }
     }
 
-    async DeleteFile (filename) {
-        await this.EYS3.Remove(filename);
-        await this.EYS3.Remove('crop_' + filename);
+    DeleteFile (filename) {
+        filename.map(async (i)=>{
+            await this.EYS3.Remove('crop_' + i);
+            await this.EYS3.Remove(i);
+        })
+        return 200
     }
 }
 

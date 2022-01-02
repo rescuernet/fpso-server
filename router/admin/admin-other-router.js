@@ -5,6 +5,11 @@ const authMiddleware = require('../../middlewares/auth-middleware');
 const router = new Router();
 
 
+router.post(`${process.env.ADMIN_PATH_PREFIX}/mediadeltmp`,
+    authMiddleware,
+    adminOtherController.media_del_tmp
+);
+
 router.post(`${process.env.ADMIN_PATH_PREFIX}/reference-books/update`,
     authMiddleware,
     adminOtherController.referenceBooks__update
