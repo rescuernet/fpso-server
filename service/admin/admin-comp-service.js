@@ -16,43 +16,45 @@ class adminCompService {
     }
 
     async compUpdate(arr) {
-        const err = [];
+        console.log('arr',arr.data)
+        if(!arr.data.dateStart || arr.data.dateStart === '') return {error: 'Не указана дата старта соревнований'}
+        if(!arr.data.dateEnd || arr.data.dateEnd === '') return {error: 'Не указана дата окончания соревнований'}
+        if(arr.data.dateEnd < arr.data.dateStart) return {error: 'Дата окончания соревнований не может быть раньше старта'}
+        if(!arr.data.location || arr.data.location === '') return {error: 'Не указано место проведения соревнований'}
+        if(!arr.data.headerFirst) return {error: 'Не указан заголовок соревнований'}
+        if(arr.data.headerFirst.length < 4) return {error: 'Минимальная длина заголовка соревнований 4 символа'}
+        if(!arr.data.textMain) return {error: 'Не указан текст, описывающий соревнования'}
+        if(arr.data.textMain && arr.data.textMain.length < 5) return {error: 'Минимальная длина текста соревнований 5 символов'}
+
         const candidate = await CompModel.find({ headerFirst: arr.data.headerFirst, _id: { $ne:  arr.data._id } }).lean()
-        if(candidate.length){
-            err.push(`Соревнование с таким заголовком уже существует`)
-            return {error: err}
-        }
-        if (arr.data.dateStart === ''
-            || arr.data.headerFirst.length < 4
-            || arr.data.textMain.length < 5) {
-            err.push(`Проверьте обязательные поля! Заголовок (не менее 4-х символов), Текст (не менее 5-ти символов)`)
-        }
+        if(candidate.length) return {error: `Соревнование с таким заголовком уже существует`}
 
-        if(arr.data.docs.length > 0){
-            arr.data.docs.map((i)=>{
-                if(i.title === ''){
-                    err.push(`Не указано название прикрепленного файла`)
+        const res = arr.data.docs.map((i) => {
+            if(i.title === ''){
+                return {error: `Не указано название прикрепленного документа в разделе общих документов соревнования`}
+            }
+        }).filter(j => j)
+        if(res.length) return res[0]
+
+        const resResult = arr.data.results.map((i, index)=>{
+            const res = i.docs.map((ii)=>{
+                if(ii.title === ''){
+                    return {error: `Не указано название прикрепленного документа ${index + 1}-го дня соревнований`}
                 }
-            })
-        }
-
-        if(err.length > 0){
-            return {error: err}
-        }
+            }).filter(j => j)
+            if(res.length) return res[0]
+        }).filter(j => j)
+        if(resResult.length) return resResult[0]
 
         try {
-            arr.data.tmp = false
-            const comp = await CompModel.findOneAndUpdate({_id: arr.data._id}, arr.data);
-
             if(arr.mediaDel && arr.mediaDel.length > 0){
-                arr.mediaDel.map((i)=>{
-                    Yandex.DeleteFile(i)
-                })
+                Yandex.DeleteFile(arr.mediaDel)
             }
+            arr.data.tmp = false
+            return await CompModel.findOneAndUpdate({_id: arr.data._id}, arr.data);
 
-            return comp;
         } catch (e) {
-            return {error: err}
+            return {error: `Что-то пошло не так... Обратитесь к разработчику. ${e}`}
         }
     }
 

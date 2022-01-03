@@ -21,11 +21,12 @@ class adminNewsService {
         const candidate = await NewsModel.find({ headerFirst: arr.data.headerFirst, _id: { $ne:  arr.data._id } }).lean()
         if(candidate.length) return {error: 'Новость с таким заголовком уже существует'}
 
-        if(arr.data.docs.length > 0){
-            arr.data.docs.map((i)=>{
-                if(i.title === '') return {error: 'Не указано название прикрепленного файла'}
-            })
-        }
+        const res = arr.data.docs.map((i) => {
+            if(i.title === ''){
+                return {error: `Не указано название прикрепленного документа`}
+            }
+        }).filter(j => j)
+        if(res.length) return res[0]
 
         try {
             if(arr.mediaDel && arr.mediaDel.length > 0){
