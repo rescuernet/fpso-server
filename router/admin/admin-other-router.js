@@ -10,6 +10,11 @@ router.post(`${process.env.ADMIN_PATH_PREFIX}/mediadeltmp`,
     adminOtherController.media_del_tmp
 );
 
+router.post(`${process.env.ADMIN_PATH_PREFIX}/mediadeltmpblocking`,
+    authMiddleware,
+    adminOtherController.media_del_tmp_blocking
+);
+
 router.post(`${process.env.ADMIN_PATH_PREFIX}/reference-books/update`,
     authMiddleware,
     adminOtherController.referenceBooks__update

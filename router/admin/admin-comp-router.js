@@ -33,6 +33,11 @@ router.post(`${process.env.ADMIN_PATH_PREFIX}/competitions/update`,
     adminCompController.compUpdate
 );
 
+router.post(`${process.env.ADMIN_PATH_PREFIX}/competitions/delete`,
+    authMiddleware,
+    adminCompController.compDelete
+);
+
 router.get(`${process.env.ADMIN_PATH_PREFIX}/competitions`,
     authMiddleware,
     adminCompController.getComp

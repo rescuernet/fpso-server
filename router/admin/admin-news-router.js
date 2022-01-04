@@ -34,8 +34,6 @@ router.post(`${process.env.ADMIN_PATH_PREFIX}/news/docs-create`,
     adminNewsController.news__docsCreate
 );
 
-
-
 router.post(`${process.env.ADMIN_PATH_PREFIX}/news/update`,
     authMiddleware,
     adminNewsController.news__update

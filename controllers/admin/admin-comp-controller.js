@@ -65,6 +65,15 @@ class adminCompController {
         }
     }
 
+    async compDelete(req, res, next) {
+        try {
+            const data = await adminCompService.compDelete(req.body.id);
+            return res.json(data);
+        } catch (e) {
+            next(e);
+        }
+    }
+
     async getComp(req, res, next) {
         try {
             const data = await adminCompService.getComp();

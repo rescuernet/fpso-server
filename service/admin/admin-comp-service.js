@@ -2,6 +2,7 @@ const CompModel = require('../../models/competitions/competitions-model.js');
 const fs = require("fs");
 const dateFns = require("date-fns");
 const Yandex = require("../../function/file-cloud");
+const NewsModel = require("../../models/news/news-model");
 
 
 class adminCompService {
@@ -16,7 +17,6 @@ class adminCompService {
     }
 
     async compUpdate(arr) {
-        console.log('arr',arr.data)
         if(!arr.data.dateStart || arr.data.dateStart === '') return {error: 'Не указана дата старта соревнований'}
         if(!arr.data.dateEnd || arr.data.dateEnd === '') return {error: 'Не указана дата окончания соревнований'}
         if(arr.data.dateEnd < arr.data.dateStart) return {error: 'Дата окончания соревнований не может быть раньше старта'}
@@ -55,6 +55,30 @@ class adminCompService {
 
         } catch (e) {
             return {error: `Что-то пошло не так... Обратитесь к разработчику. ${e}`}
+        }
+    }
+
+    async compDelete(id) {
+        let mediaDel = [];
+        const compOne = await CompModel.findById(id);
+        if(compOne.avatar){mediaDel.push(compOne.avatar)}
+        compOne.images.map((i)=>{
+            mediaDel.push(i)
+        })
+        compOne.docs.map((i)=>{
+            mediaDel.push(i.doc)
+        })
+
+        compOne.results.map((i)=>{
+            i.docs.map((ii)=>{
+                mediaDel.push(ii.doc)
+            })
+        })
+
+        await CompModel.findOneAndDelete({_id: id})
+
+        if(mediaDel && mediaDel.length > 0){
+            Yandex.DeleteFile(mediaDel)
         }
     }
 

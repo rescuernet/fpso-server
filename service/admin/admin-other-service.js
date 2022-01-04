@@ -2,13 +2,9 @@ const ReferenceBooksModel = require('../../models/reference-books/reference-book
 
 class adminOtherService {
 
-    /*async referenceBooks__update() {
-        return await ReferenceBooksModel.create({pool:[{address:'hjhjk'}]});
-    }*/
-
     async referenceBooks__update(Arr) {
         await ReferenceBooksModel.findOneAndDelete({});
-        return ReferenceBooksModel.create(Arr);
+        return await ReferenceBooksModel.create(Arr);
     }
 
     async referenceBooks__get() {
