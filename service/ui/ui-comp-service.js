@@ -12,7 +12,7 @@ class uiCompService {
         const query = {
             published: true,
             tmp: false,
-            dateStart: {$lte: date}
+            /*dateStart: {$lte: date}*/
         }
         const options = {
             page: page,
