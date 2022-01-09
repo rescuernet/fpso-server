@@ -1,4 +1,4 @@
-const adminOtherService = require('../../service/admin/admin-other-service');
+const adminOtherService = require('../../service/admin/admin-reference-books-service');
 const Yandex = require("../../function/file-cloud");
 const Blocking = require("../../models/blocking/blocking");
 
@@ -31,23 +31,6 @@ class adminOtherController {
         }
     }
 
-    async referenceBooks__update(req, res, next) {
-        try {
-            const referenceBooksData = await adminOtherService.referenceBooks__update(req.body);
-            return res.json(referenceBooksData);
-        } catch (e) {
-            next(e);
-        }
-    }
-
-    async referenceBooks__get(req, res, next) {
-        try {
-            const referenceBooksData = await adminOtherService.referenceBooks__get();
-            return res.json(referenceBooksData);
-        } catch (e) {
-            next(e);
-        }
-    }
 }
 
 module.exports = new adminOtherController();
