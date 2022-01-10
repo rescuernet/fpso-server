@@ -20,15 +20,10 @@ router.get(`${process.env.ADMIN_PATH_PREFIX}/reference-books/pools/edit/:id`,
     adminReferenceBooksController.pools_id
 );
 
-/*router.post(`${process.env.ADMIN_PATH_PREFIX}/reference-books/pools/update`,
+router.post(`${process.env.ADMIN_PATH_PREFIX}/reference-books/pools/save`,
     authMiddleware,
-    adminReferenceBookController.referenceBooks__update
-);*/
-
-/*router.get(`${process.env.ADMIN_PATH_PREFIX}/reference-books`,
-    authMiddleware,
-    adminReferenceBookController.referenceBooks__get
-);*/
+    adminReferenceBooksController.pools_save
+);
 
 
 module.exports = adminReferenceBooksRouter = router;

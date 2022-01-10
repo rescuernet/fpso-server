@@ -16,14 +16,23 @@ class adminReferenceBooksService {
         return PoolsModel.findById(id);
     }
 
-    /*async referenceBooks__update(Arr) {
-        await ReferenceBooksModel.findOneAndDelete({});
-        return await ReferenceBooksModel.create(Arr);
+    async pools_save(arr) {
+        if(!arr.name) return {error: 'Не указано название бассейна'}
+        if(arr.name === '') return {error: 'Не указано название бассейна'}
+        if(!arr.address) return {error: 'Не указан адрес бассейна'}
+        if(arr.address === '') return {error: 'Не указан адрес бассейна'}
+
+        try {
+            arr.tmp = false
+            return await PoolsModel.findOneAndUpdate({_id: arr._id}, arr);
+        } catch (e) {
+            return {error: `Что-то пошло не так... Обратитесь к разработчику. ${e}`}
+        }
+
+
     }
 
-    async referenceBooks__get() {
-        return ReferenceBooksModel.findOne({}).lean();
-    }*/
+
 }
 
 

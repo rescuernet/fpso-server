@@ -5,7 +5,7 @@ const Competitions = new Schema(
     {
         dateStart: {type: Date},
         dateEnd: {type: Date},
-        location: {type: String},
+        location: {type: Schema.Types.ObjectId, ref: 'Pools'},
         headerFirst: {type: String, maxlength: 255, trim: true},
         textMain: {type: String, trim: true},
         avatar: {type: String},

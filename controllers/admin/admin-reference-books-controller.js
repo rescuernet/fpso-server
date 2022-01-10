@@ -31,23 +31,16 @@ class adminReferenceBooksController {
         }
     }
 
-    /*async referenceBooks__update(req, res, next) {
+    async pools_save(req, res, next) {
         try {
-            const referenceBooksData = await adminReferenceBookService.referenceBooks__update(req.body);
-            return res.json(referenceBooksData);
+            const response = await adminReferenceBooksService.pools_save(req.body);
+            return res.json(response);
         } catch (e) {
             next(e);
         }
     }
 
-    async referenceBooks__get(req, res, next) {
-        try {
-            const referenceBooksData = await adminReferenceBookService.referenceBooks__get();
-            return res.json(referenceBooksData);
-        } catch (e) {
-            next(e);
-        }
-    }*/
+
 }
 
 module.exports = new adminReferenceBooksController();

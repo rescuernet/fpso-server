@@ -19,6 +19,7 @@ class Resize {
             .rotate()
             .resize(width, height, {
                 fit: fit,
+                background: { r: 229, g: 229, b: 229, alpha: 1 }
             })
             .toFile('./static/tmp/' + filename)
         return filename;

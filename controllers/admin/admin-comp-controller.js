@@ -1,4 +1,5 @@
 const adminCompService = require('../../service/admin/admin-comp-service');
+const adminReferenceBooksService = require('../../service/admin/admin-reference-books-service');
 const {validationResult} = require('express-validator');
 const ApiError = require('../../exceptions/api-error');
 const Resize = require("../../function/Resize");
@@ -19,8 +20,9 @@ class adminCompController {
 
     async getCompId(req, res, next) {
         try {
-            const data = await adminCompService.getCompId(req.params.id);
-            return res.json(data);
+            const comp = await adminCompService.getCompId(req.params.id);
+            const pools = await adminReferenceBooksService.pools_get()
+            return res.json({comp,pools});
         } catch (e) {
             next(e);
         }
@@ -31,7 +33,7 @@ class adminCompController {
         if(checkFile === 200){
             try {
                 const fileUpload = new Resize();
-                const filename = await fileUpload.save(req.file.buffer,'cover',300,300,null);
+                const filename = await fileUpload.save(req.file.buffer,'inside',300,300,null);
                 const uploadDocs = await Yandex.UploadFile('',filename)
                 return res.status(200).json({ name: uploadDocs.key });
             } catch (e) {

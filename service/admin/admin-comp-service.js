@@ -2,7 +2,6 @@ const CompModel = require('../../models/competitions/competitions-model.js');
 const fs = require("fs");
 const dateFns = require("date-fns");
 const Yandex = require("../../function/file-cloud");
-const NewsModel = require("../../models/news/news-model");
 
 
 class adminCompService {

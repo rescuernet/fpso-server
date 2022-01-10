@@ -20,7 +20,8 @@ class uiCompService {
             sort: {
                 dateStart: -1,
                 createdAt: -1,
-            }
+            },
+            populate: 'location'
         }
         return  this.compModel.paginate(query, options, function(err, result) {
             return result
@@ -28,7 +29,7 @@ class uiCompService {
     }
 
     async getCompId(id) {
-        return  this.compModel.findById(id);
+        return  this.compModel.findById(id).populate('location');
     }
 }
 
