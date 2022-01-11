@@ -1,11 +1,11 @@
 module.exports = whitelistSymbol = {
     whitelistEmail: {
         exp: /^[A-Za-z0-9-_@.]+$/,
-        messageError: "Проверьте e-mail адрес. Разрешены только буквы латинского алфавита, цифры и символы: @ - _ ."
+        messageError: "Не корректные данные"
     },
     whitelistPass: {
         exp: /^[A-Za-z0-9-_@$!]+$/,
-        messageError: "Проверьте пароль. Разрешены только буквы латинского алфавита, цифры и символы: @ $ ! - _ ."
+        messageError: "Не корректные данные"
     },
     passwordStrong: {
         option: {
