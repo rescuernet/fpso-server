@@ -22,7 +22,7 @@ class adminNewsController {
         if(checkFile === 200){
             try {
                 const fileUpload = new Resize();
-                const filename = await fileUpload.save(req.file.buffer,'cover',200,200,null);
+                const filename = await fileUpload.save(req.file.buffer,'inside',300,300,null);
                 const uploadDocs = await Yandex.UploadFile('',filename)
                 return res.status(200).json({ name: uploadDocs.key });
             } catch (e) {

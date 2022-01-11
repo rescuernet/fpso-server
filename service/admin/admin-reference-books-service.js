@@ -4,7 +4,7 @@ class adminReferenceBooksService {
 
     async pools_get() {
         await PoolsModel.deleteMany({tmp: true})
-        return PoolsModel.find({}).lean();
+        return PoolsModel.find({view: true}).lean();
     }
 
     async pools_create() {
