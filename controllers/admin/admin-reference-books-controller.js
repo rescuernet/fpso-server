@@ -86,6 +86,15 @@ class adminReferenceBooksController {
         }
     }
 
+    async people_get(req, res, next) {
+        try {
+            const response = await adminReferenceBooksService.people_get();
+            return res.json(response);
+        } catch (e) {
+            next(e);
+        }
+    }
+
 
 }
 

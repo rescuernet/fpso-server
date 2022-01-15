@@ -42,8 +42,8 @@ class adminReferenceBooksService {
 
     async people_save(arr) {
         if(arr.role.length === 0) return {error: 'Не выбрана роль'}
-        if(!arr.gender) return {error: 'Не указан пол'}
-        if(arr.gender === '') return {error: 'Не указан пол'}
+        /*if(!arr.gender) return {error: 'Не указан пол'}
+        if(arr.gender === '') return {error: 'Не указан пол'}*/
         if(!arr.surname) return {error: 'Не указана фамилия'}
         if(arr.surname === '') return {error: 'Не указана фамилия'}
         if(arr.surname.length < 3) return {error: 'Фамилия не менее 3-х символов'}
@@ -59,6 +59,11 @@ class adminReferenceBooksService {
         } catch (e) {
             return {error: `Что-то пошло не так... Обратитесь к разработчику. ${e}`}
         }
+    }
+
+    async people_get() {
+        await PeopleModel.deleteMany({tmp: true})
+        return PeopleModel.find({}).sort({view: -1,surname: 1}).lean();
     }
 
 

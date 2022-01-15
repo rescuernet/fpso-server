@@ -47,6 +47,10 @@ router.post(`${process.env.ADMIN_PATH_PREFIX}/reference-books/people/save`,
     authMiddleware,
     adminReferenceBooksController.people_save
 );
+router.get(`${process.env.ADMIN_PATH_PREFIX}/reference-books/people/get`,
+    authMiddleware,
+    adminReferenceBooksController.people_get
+);
 
 
 module.exports = adminReferenceBooksRouter = router;
