@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const authRouter = require('./router/auth-router');
 const adminNewsRouter = require('./router/admin/admin-news-router');
 const adminCompRouter = require('./router/admin/admin-comp-router');
+const adminJudgesRouter = require('./router/admin/admin-judges-router');
 const adminOtherRouter = require('./router/admin/admin-other-router');
 const adminReferenceBooksRouter = require('./router/admin/admin-reference-books-router');
 const uiNewsRouter = require('./router/ui/ui-news-router');
@@ -29,6 +30,7 @@ app.use(cors({
 app.use('/api', authRouter);
 app.use('/api', adminNewsRouter);
 app.use('/api', adminCompRouter);
+app.use('/api', adminJudgesRouter);
 app.use('/api', adminOtherRouter);
 app.use('/api', adminReferenceBooksRouter);
 app.use('/api', uiNewsRouter);
