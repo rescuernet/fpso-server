@@ -31,4 +31,9 @@ router.post(`${process.env.ADMIN_PATH_PREFIX}/judges-orders/save`,
     adminJudgesOrdersController.judges_orders_save
 );
 
+router.get(`${process.env.ADMIN_PATH_PREFIX}/judges-orders`,
+    authMiddleware,
+    adminJudgesOrdersController.judges_orders_get
+);
+
 module.exports = adminJudgesRouter = router;

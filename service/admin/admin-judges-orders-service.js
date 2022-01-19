@@ -1,5 +1,6 @@
 const JudgesOrders = require('../../models/judges-orders/judges-orders.js');
 const PeopleModel = require('../../models/reference-books/people.js');
+const {log} = require("sharp/lib/libvips");
 
 class adminJudgesOrdersService {
 
@@ -18,16 +19,36 @@ class adminJudgesOrdersService {
 
 
     async judges_orders_save(arr) {
-        console.log(arr)
         if(arr.dateOrder === '') return {error: 'Не указана дата приказа'}
         if(arr.orderType === '') return {error: 'Не указан тип приказа'}
         if(arr.judges.length === 0) return {error: 'Не выбраны судьи'}
-        /*if(arr.docs.length === 0) return {error: 'Не выбран документ приказа'}*/
-        try {
+        if(arr.docs.length === 0) return {error: 'Не выбран документ приказа'}
+
+        const oldPeople = await JudgesOrders.findById(arr._id).select('judges')
+
+
+        /*oldPeople.judges.map( async (i)=>{
+            await PeopleModel.findOneAndUpdate({_id: i._id.toString()},{rank_judges: '',orderId: ''})
+        })*/
+
+        arr.judges.map( async (i)=>{
+            const res = await PeopleModel.findOneAndUpdate({_id: i},{rank_judges: arr.orderType.substring(5,0),orderId: arr._id})
+            console.log(res)
+        })
+
+
+        /*try {
             return await JudgesOrders.findOneAndUpdate({_id: arr._id}, arr);
         } catch (e) {
             return {error: `Что-то пошло не так... Обратитесь к разработчику. ${e}`}
-        }
+        }*/
+    }
+
+    async judges_orders_get(orderType) {
+        const query = {view: true}
+        if(orderType)query.orderType = orderType
+        await JudgesOrders.deleteMany({tmp: true})
+        return JudgesOrders.find(query).populate('judges').lean();
     }
 
     /*

@@ -58,6 +58,16 @@ class adminJudgesOrdersController {
         }
     }
 
+    async judges_orders_get(req, res, next) {
+        const orderType = req.query.ordertype
+        try {
+            const response = await adminJudgesOrdersService.judges_orders_get(orderType);
+            return res.json(response);
+        } catch (e) {
+            next(e);
+        }
+    }
+
     /*
 
     async pools_save(req, res, next) {

@@ -11,6 +11,7 @@ const Peoples = new Schema({
     rank_judges: {type: String, default: ''},
     rank_trainer: {type: String, default: ''},
     rank_athlete: {type: String, default: ''},
+    orderId: {type: String, default: ''},
     view: {type: Boolean, default: true},
     tmp: {type: Boolean, default: true}
 })
