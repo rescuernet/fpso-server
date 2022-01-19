@@ -34,6 +34,30 @@ class adminJudgesOrdersController {
         }
     }
 
+    async judges_orders_docs_create(req, res, next) {
+        const checkFile = checkUpload.checkUploadFile(req.file, 'docs')
+        if(checkFile === 200){
+            try {
+                const uploadDocs = await Yandex.UploadFile(req.file)
+                return res.json({doc: uploadDocs.key});
+            } catch (e) {
+                next(e);
+            }
+        }else{
+            return res.status(401).json({error: 'Ошибка загрузки'});
+        }
+    }
+
+
+    async judges_orders_save(req, res, next) {
+        try {
+            const response = await adminJudgesOrdersService.judges_orders_save(req.body);
+            return res.json(response);
+        } catch (e) {
+            next(e);
+        }
+    }
+
     /*
 
     async pools_save(req, res, next) {
@@ -88,14 +112,7 @@ class adminJudgesOrdersController {
         }
     }
 
-    async people_save(req, res, next) {
-        try {
-            const response = await adminReferenceBooksService.people_save(req.body);
-            return res.json(response);
-        } catch (e) {
-            next(e);
-        }
-    }
+
 
     async people_get(req, res, next) {
         try {

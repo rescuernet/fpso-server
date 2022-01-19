@@ -9,11 +9,25 @@ class adminJudgesOrdersService {
     }
 
     async judges_orders_id(id) {
-        return JudgesOrders.findById(id);
+        return JudgesOrders.findById(id).populate('judges');
     }
 
     async judges_orders_people_get() {
         return PeopleModel.find({view: true}).sort({surname: 1}).lean();
+    }
+
+
+    async judges_orders_save(arr) {
+        console.log(arr)
+        if(arr.dateOrder === '') return {error: 'Не указана дата приказа'}
+        if(arr.orderType === '') return {error: 'Не указан тип приказа'}
+        if(arr.judges.length === 0) return {error: 'Не выбраны судьи'}
+        /*if(arr.docs.length === 0) return {error: 'Не выбран документ приказа'}*/
+        try {
+            return await JudgesOrders.findOneAndUpdate({_id: arr._id}, arr);
+        } catch (e) {
+            return {error: `Что-то пошло не так... Обратитесь к разработчику. ${e}`}
+        }
     }
 
     /*
@@ -46,26 +60,7 @@ class adminJudgesOrdersService {
         return PeopleModel.findById(id);
     }
 
-    async people_save(arr) {
-        if(arr.role.length === 0) return {error: 'Не выбрана роль'}
-        /!*if(!arr.gender) return {error: 'Не указан пол'}
-        if(arr.gender === '') return {error: 'Не указан пол'}*!/
-        if(!arr.surname) return {error: 'Не указана фамилия'}
-        if(arr.surname === '') return {error: 'Не указана фамилия'}
-        if(arr.surname.length < 3) return {error: 'Фамилия не менее 3-х символов'}
-        if(!arr.name) return {error: 'Не указано имя'}
-        if(arr.name === '') return {error: 'Не указано имя'}
-        if(arr.name.length < 3) return {error: 'Имя не менее 3-х символов'}
-        if(!arr.patronymic) return {error: 'Не указано отчество'}
-        if(arr.patronymic === '') return {error: 'Не указано отчество'}
-        if(arr.patronymic.length < 3) return {error: 'Отчество не менее 3-х символов'}
-        try {
-            arr.tmp = false
-            return await PeopleModel.findOneAndUpdate({_id: arr._id}, arr);
-        } catch (e) {
-            return {error: `Что-то пошло не так... Обратитесь к разработчику. ${e}`}
-        }
-    }
+
 
     async people_get() {
         await PeopleModel.deleteMany({tmp: true})
