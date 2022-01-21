@@ -1,6 +1,7 @@
 const JudgesOrders = require('../../models/judges-orders/judges-orders.js');
 const PeopleModel = require('../../models/reference-books/people.js');
 const {log} = require("sharp/lib/libvips");
+const Yandex = require("../../function/file-cloud");
 
 class adminJudgesOrdersService {
 
@@ -13,42 +14,64 @@ class adminJudgesOrdersService {
         return JudgesOrders.findById(id).populate('judges');
     }
 
-    async judges_orders_people_get() {
-        return PeopleModel.find({view: true}).sort({surname: 1}).lean();
+    async judges_orders_people_get(orderType) {
+        const rank = orderType.substring(5,0)
+        const doc_type = orderType.substr(-3)
+
+        /*console.log('rank: ' + rank + ' doc_type: ' + doc_type)*/
+
+        let query = {
+            view: true,
+            role: {
+                $in:['judges']
+            }
+        }
+
+        if(rank === 'cat_v'){query.rank_judges = 'cat_1'}
+        if(rank === 'cat_1'){query.rank_judges = 'cat_2'}
+        if(rank === 'cat_2'){query.rank_judges = 'cat_3'}
+        if(rank === 'cat_3'){query.rank_judges = ''}
+
+        if (doc_type === 'ext'){query.rank_judges = rank}
+
+        return PeopleModel.find(query).sort({surname: 1}).lean();
     }
 
 
     async judges_orders_save(arr) {
-        if(arr.dateOrder === '') return {error: 'Не указана дата приказа'}
-        if(arr.orderType === '') return {error: 'Не указан тип приказа'}
-        if(arr.judges.length === 0) return {error: 'Не выбраны судьи'}
-        if(arr.docs.length === 0) return {error: 'Не выбран документ приказа'}
+        if (arr.data.dateOrder === '') return {error: 'Не указана дата приказа'}
+        if (arr.data.orderType === '') return {error: 'Не указан тип приказа'}
+        if (arr.data.judges.length === 0) return {error: 'Не выбраны судьи'}
+        if (arr.data.docs.length === 0) return {error: 'Не выбран документ приказа'}
 
-        const oldPeople = await JudgesOrders.findById(arr._id).select('judges')
+        try {
+            const oldPeople = await JudgesOrders.findById(arr.data._id).select('judges')
+            if(oldPeople.judges.length > 0){
+                await PeopleModel.updateMany({_id: {$in: oldPeople.judges}}, {orderId: '', rank_judges: ''})
+            }
 
+            if(arr.data.orderType.substr(-3) === 'app') {
+                await JudgesOrders.updateMany({judges: {$in: arr.data.judges} }, {$pull: {judges: {$in: arr.data.judges}}})
+            }
 
-        /*oldPeople.judges.map( async (i)=>{
-            await PeopleModel.findOneAndUpdate({_id: i._id.toString()},{rank_judges: '',orderId: ''})
-        })*/
+            await PeopleModel.updateMany({_id: {$in: arr.data.judges}}, {orderId: arr.data._id, rank_judges: arr.data.orderType.substring(5,0)})
 
-        arr.judges.map( async (i)=>{
-            const res = await PeopleModel.findOneAndUpdate({_id: i},{rank_judges: arr.orderType.substring(5,0),orderId: arr._id})
-            console.log(res)
-        })
+            if(arr.mediaDel && arr.mediaDel.length > 0){
+                Yandex.DeleteFile(arr.mediaDel)
+            }
 
-
-        /*try {
-            return await JudgesOrders.findOneAndUpdate({_id: arr._id}, arr);
+            const result = await JudgesOrders.findOneAndUpdate({_id: arr.data._id}, arr.data);
+            return result
         } catch (e) {
             return {error: `Что-то пошло не так... Обратитесь к разработчику. ${e}`}
-        }*/
+        }
     }
 
     async judges_orders_get(orderType) {
         const query = {view: true}
-        if(orderType)query.orderType = orderType
+        if (orderType) query.orderType = orderType
         await JudgesOrders.deleteMany({tmp: true})
-        return JudgesOrders.find(query).populate('judges').lean();
+        return JudgesOrders.find(query).populate('judges').sort({_id: -1}).lean();
     }
 
     /*

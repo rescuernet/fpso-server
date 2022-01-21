@@ -26,8 +26,9 @@ class adminJudgesOrdersController {
     }
 
     async judges_orders_people_get(req, res, next) {
+        const orderType = req.query.ordertype
         try {
-            const response = await adminJudgesOrdersService.judges_orders_people_get();
+            const response = await adminJudgesOrdersService.judges_orders_people_get(orderType);
             return res.json(response);
         } catch (e) {
             next(e);
