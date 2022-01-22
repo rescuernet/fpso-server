@@ -76,7 +76,7 @@ class adminJudgesOrdersService {
 
         await JudgesOrders.deleteMany({$or:[{tmp:true},{_id:{$in:delOrder}}]})
 
-        const query = {view: true}
+        const query = {}
         if (orderType) query.orderType = orderType
         return JudgesOrders.find(query).populate('judges').sort({orderType: 1}).lean();
     }
