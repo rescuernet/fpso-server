@@ -22,9 +22,7 @@ class adminJudgesOrdersService {
 
         let query = {
             view: true,
-            role: {
-                $in:['judges']
-            }
+            role: {$in:['judges']}
         }
 
         if(rank === 'cat_v'){query.rank_judges = 'cat_1'}
@@ -68,10 +66,19 @@ class adminJudgesOrdersService {
     }
 
     async judges_orders_get(orderType) {
+
+        const orderForDel = await JudgesOrders.find({judges:{$size:0}}).select('docs')
+        let delOrder = []
+        let delDocs = []
+        orderForDel.map((i)=>{delOrder.push(i.id);i.docs.map((ii)=>{delDocs.push(ii.doc)})})
+
+        if(delDocs.length > 0){Yandex.DeleteFile(delDocs)}
+
+        await JudgesOrders.deleteMany({$or:[{tmp:true},{_id:{$in:delOrder}}]})
+
         const query = {view: true}
         if (orderType) query.orderType = orderType
-        await JudgesOrders.deleteMany({tmp: true})
-        return JudgesOrders.find(query).populate('judges').sort({_id: -1}).lean();
+        return JudgesOrders.find(query).populate('judges').sort({orderType: 1}).lean();
     }
 
     /*
