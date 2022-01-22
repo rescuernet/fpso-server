@@ -11,6 +11,7 @@ const adminOtherRouter = require('./router/admin/admin-other-router');
 const adminReferenceBooksRouter = require('./router/admin/admin-reference-books-router');
 const uiNewsRouter = require('./router/ui/ui-news-router');
 const uiCompRouter = require('./router/ui/ui-comp-router');
+const uiJudgesRouter = require('./router/ui/ui-judges-router');
 const errorMiddleware = require('./middlewares/error-middleware');
 const bodyParser = require("body-parser");
 const fs = require("fs");
@@ -35,6 +36,7 @@ app.use('/api', adminOtherRouter);
 app.use('/api', adminReferenceBooksRouter);
 app.use('/api', uiNewsRouter);
 app.use('/api', uiCompRouter);
+app.use('/api', uiJudgesRouter);
 
 app.use(errorMiddleware);
 
