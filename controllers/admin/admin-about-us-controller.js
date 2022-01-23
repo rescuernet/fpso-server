@@ -16,6 +16,38 @@ class adminAboutUsController {
         }
     }
 
+    async about_us_docs_create(req, res, next) {
+        const checkFile = checkUpload.checkUploadFile(req.file, 'docs')
+        if(checkFile === 200){
+            try {
+                const uploadDocs = await Yandex.UploadFile(req.file)
+                return res.json({doc: uploadDocs.key});
+            } catch (e) {
+                next(e);
+            }
+        }else{
+            return res.status(401).json({error: 'Ошибка загрузки'});
+        }
+    }
+
+    async about_us_img_create(req, res, next) {
+        const checkFile = checkUpload.checkUploadFile(req.file, 'image')
+        if(checkFile === 200){
+            try {
+                const fileUpload = new Resize();
+                const filename = await fileUpload.save(req.file.buffer,'inside',1000,1000,null);
+                const uploadDocs = await Yandex.UploadFile('',filename)
+                const cropFileName = await fileUpload.save(req.file.buffer,'cover',120,120,'crop_' + filename);
+                await Yandex.UploadFile('',cropFileName)
+                return res.status(200).json({ name: uploadDocs.key });
+            } catch (e) {
+                next(e);
+            }
+        }else{
+            return res.status(401).json({error: 'Ошибка загрузки'});
+        }
+    }
+
     /*async judges_orders_id(req, res, next) {
         try {
             const response = await adminJudgesOrdersService.judges_orders_id(req.params.id);

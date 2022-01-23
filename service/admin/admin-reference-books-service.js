@@ -1,5 +1,6 @@
 const PoolsModel = require('../../models/reference-books/pools.js');
 const PeopleModel = require('../../models/reference-books/people.js');
+const Yandex = require("../../function/file-cloud");
 
 class adminReferenceBooksService {
 
@@ -41,21 +42,24 @@ class adminReferenceBooksService {
     }
 
     async people_save(arr) {
-        if(arr.role.length === 0) return {error: 'Не выбрана роль'}
-        /*if(!arr.gender) return {error: 'Не указан пол'}
-        if(arr.gender === '') return {error: 'Не указан пол'}*/
-        if(!arr.surname) return {error: 'Не указана фамилия'}
-        if(arr.surname === '') return {error: 'Не указана фамилия'}
-        if(arr.surname.length < 3) return {error: 'Фамилия не менее 3-х символов'}
-        if(!arr.name) return {error: 'Не указано имя'}
-        if(arr.name === '') return {error: 'Не указано имя'}
-        if(arr.name.length < 3) return {error: 'Имя не менее 3-х символов'}
-        if(!arr.patronymic) return {error: 'Не указано отчество'}
-        if(arr.patronymic === '') return {error: 'Не указано отчество'}
-        if(arr.patronymic.length < 3) return {error: 'Отчество не менее 3-х символов'}
+        if(arr.data.role.length === 0) return {error: 'Не выбрана роль'}
+        /*if(!arr.data.gender) return {error: 'Не указан пол'}
+        if(arr.data.gender === '') return {error: 'Не указан пол'}*/
+        if(!arr.data.surname) return {error: 'Не указана фамилия'}
+        if(arr.data.surname === '') return {error: 'Не указана фамилия'}
+        if(arr.data.surname.length < 3) return {error: 'Фамилия не менее 3-х символов'}
+        if(!arr.data.name) return {error: 'Не указано имя'}
+        if(arr.data.name === '') return {error: 'Не указано имя'}
+        if(arr.data.name.length < 3) return {error: 'Имя не менее 3-х символов'}
+        if(!arr.data.patronymic) return {error: 'Не указано отчество'}
+        if(arr.data.patronymic === '') return {error: 'Не указано отчество'}
+        if(arr.data.patronymic.length < 3) return {error: 'Отчество не менее 3-х символов'}
         try {
-            arr.tmp = false
-            return await PeopleModel.findOneAndUpdate({_id: arr._id}, arr);
+            if(arr.mediaDel && arr.mediaDel.length > 0){
+                Yandex.DeleteFile(arr.mediaDel)
+            }
+            arr.data.tmp = false
+            return await PeopleModel.findOneAndUpdate({_id: arr.data._id}, arr.data);
         } catch (e) {
             return {error: `Что-то пошло не так... Обратитесь к разработчику. ${e}`}
         }

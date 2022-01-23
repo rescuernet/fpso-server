@@ -10,6 +10,18 @@ router.get(`${process.env.ADMIN_PATH_PREFIX}/about-us`,
     adminAboutUsController.about_us_get
 );
 
+router.post(`${process.env.ADMIN_PATH_PREFIX}/about-us/docs-create`,
+    docsUpload_MD.single('files'),
+    authMiddleware,
+    adminAboutUsController.about_us_docs_create
+);
+
+router.post(`${process.env.ADMIN_PATH_PREFIX}/about-us/img-create`,
+    docsUpload_MD.single('files'),
+    authMiddleware,
+    adminAboutUsController.about_us_img_create
+);
+
 /*
 
 

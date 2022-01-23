@@ -1,7 +1,7 @@
 const multer = require('multer');
-const uuid = require('uuid');
-const fs = require('fs')
 
+
+const maxSize = 4 * 1024 * 1024;
 
 const storage = multer.memoryStorage({
     destination: function(req,file,cb){
@@ -9,4 +9,6 @@ const storage = multer.memoryStorage({
     }
 })
 
-module.exports = multer({storage});
+const limits = { fileSize: maxSize }
+
+module.exports = multer({storage,limits});
