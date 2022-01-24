@@ -2,11 +2,31 @@ const AboutUsModel = require('../../models/about-us/about-us-model.js');
 
 const {log} = require("sharp/lib/libvips");
 const Yandex = require("../../function/file-cloud");
+const CompModel = require("../../models/competitions/competitions-model");
 
 class adminAboutUsService {
 
     async about_us_get() {
         return AboutUsModel.findOne({}).lean();
+    }
+
+    async about_us_save(arr) {
+        const res = arr.data.docs.map((i) => {
+            if(i.title === ''){
+                return {error: `Не указано название прикрепленного документа в разделе общих документов соревнования`}
+            }
+        }).filter(j => j)
+        if(res.length) return res[0]
+
+        try {
+            if(arr.mediaDel && arr.mediaDel.length > 0){
+                Yandex.DeleteFile(arr.mediaDel)
+            }
+            return await AboutUsModel.findOneAndUpdate({_id: arr.data._id}, arr.data);
+
+        } catch (e) {
+            return {error: `Что-то пошло не так... Обратитесь к разработчику. ${e}`}
+        }
     }
 
     /*async judges_orders_id(id) {

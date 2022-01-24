@@ -22,6 +22,11 @@ router.post(`${process.env.ADMIN_PATH_PREFIX}/about-us/img-create`,
     adminAboutUsController.about_us_img_create
 );
 
+router.post(`${process.env.ADMIN_PATH_PREFIX}/about-us/save`,
+    authMiddleware,
+    adminAboutUsController.about_us_save
+);
+
 /*
 
 
