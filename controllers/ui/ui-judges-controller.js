@@ -7,7 +7,8 @@ class uiJudgesController {
         const orderType = req.query.ordertype
         try {
             const query = {
-                view: true
+                view: true,
+                tmp: false
             }
             if (orderType) query.orderType = orderType
             const data = await JudgesOrders.find(query).populate('judges').sort({orderType: 1}).lean();

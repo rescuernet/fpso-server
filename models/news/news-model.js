@@ -6,7 +6,6 @@ const News = new Schema(
         dateStart: {type: Date},
         dateEnd: {type: Date, default: ''},
         headerFirst: {type: String, maxlength: 255, trim: true},
-        headerSecond: {type: String, maxlength: 255, trim: true},
         textMain: {type: String, trim: true},
         fixedNews: {type: Boolean, default: false},
         importantNews: {type: Boolean, default: false},
