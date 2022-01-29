@@ -1,7 +1,7 @@
 const Const = {
     API_URL: 'http://localhost:5000',
-    CLIENT_URL: `http://localhost:3000`,
-    /*CLIENT_URL: `141.8.193.205:8080`,*/
+    /*CLIENT_URL: `http://localhost:3000`,*/
+    CLIENT_URL: `141.8.193.205:8080`,
     SERVER_PORT: 5000,
     DB_URL: `mongodb+srv://admin:admin@cluster0.qkb97.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
     JWT_ACCESS_SECRET: `access-Guzev-fpco-react+node+mongoDB`,
