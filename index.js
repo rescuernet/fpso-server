@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const authRouter = require('./router/auth-router');
 const adminNewsRouter = require('./router/admin/admin-news-router');
 const adminCompRouter = require('./router/admin/admin-comp-router');
+const adminCalendarPlanRouter = require('./router/admin/admin-calendar-plan-router');
 const adminJudgesRouter = require('./router/admin/admin-judges-router');
 const adminOtherRouter = require('./router/admin/admin-other-router');
 const adminReferenceBooksRouter = require('./router/admin/admin-reference-books-router');
@@ -17,8 +18,9 @@ const uiAboutUsRouter = require('./router/ui/ui-about-us-router');
 const errorMiddleware = require('./middlewares/error-middleware');
 const bodyParser = require("body-parser");
 const fs = require("fs");
+const Const = require('./const-keys/const')
 
-const PORT = process.env.PORT || 5000;
+const PORT = Const.SERVER_PORT || 5000;
 const app = express();
 
 app.use(express.json());
@@ -28,11 +30,12 @@ app.use(express.static('static'));
 app.use(cookieParser());
 app.use(cors({
     credentials:true,
-    origin: process.env.CLIENT_URL
+    origin: Const.CLIENT_URL
 }));
 app.use('/api', authRouter);
 app.use('/api', adminNewsRouter);
 app.use('/api', adminCompRouter);
+app.use('/api', adminCalendarPlanRouter);
 app.use('/api', adminJudgesRouter);
 app.use('/api', adminOtherRouter);
 app.use('/api', adminReferenceBooksRouter);
@@ -46,7 +49,7 @@ app.use(errorMiddleware);
 
 const start = async () => {
     try {
-        await mongoose.connect(process.env.DB_URL,{
+        await mongoose.connect(Const.DB_URL,{
             useNewUrlParser: true,
             useUnifiedTopology: true
         })

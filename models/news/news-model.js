@@ -10,7 +10,7 @@ const News = new Schema(
         fixedNews: {type: Boolean, default: false},
         importantNews: {type: Boolean, default: false},
         published: {type: Boolean, default: false},
-        avatar: {type: String},
+        avatar: {type: String, trim: true},
         images: {type: Object, default: []},
         docs: {type: Object, default: []},
         tmpNews: {type: Boolean, default: false},

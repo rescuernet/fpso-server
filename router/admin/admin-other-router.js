@@ -1,16 +1,17 @@
 const Router = require('express').Router;
 const adminOtherController = require('../../controllers/admin/admin-other-controller');
 const authMiddleware = require('../../middlewares/auth-middleware');
+const Const = require("../../const-keys/const");
 
 const router = new Router();
 
 
-router.post(`${process.env.ADMIN_PATH_PREFIX}/mediadeltmp`,
+router.post(`${Const.ADMIN_PATH_PREFIX}/mediadeltmp`,
     authMiddleware,
     adminOtherController.media_del_tmp
 );
 
-router.post(`${process.env.ADMIN_PATH_PREFIX}/mediadeltmpblocking`,
+router.post(`${Const.ADMIN_PATH_PREFIX}/mediadeltmpblocking`,
     authMiddleware,
     adminOtherController.media_del_tmp_blocking
 );

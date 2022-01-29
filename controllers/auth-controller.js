@@ -1,6 +1,7 @@
 const authService = require('../service/auth-service');
 const {validationResult} = require('express-validator');
 const ApiError = require('../exceptions/api-error');
+const Const = require("../const-keys/const");
 
 class authController {
     async registration(req, res, next) {
@@ -49,7 +50,7 @@ class authController {
         try {
             const activationLink = req.params.link;
             await authService.activate(activationLink);
-            return res.redirect(process.env.CLIENT_URL);
+            return res.redirect(Const.CLIENT_URL);
         } catch (e) {
             next(e);
         }
