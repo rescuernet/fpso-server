@@ -1,6 +1,7 @@
 const EasyYandexS3 = require("easy-yandex-s3");
 const uuid = require('uuid');
 const path = require("path");
+const fs = require('fs');
 const constKeys = require('../const-keys/const-keys')
 
 class Yandex {
@@ -36,6 +37,10 @@ class Yandex {
             await this.EYS3.Remove(i);
         })
         return 200
+    }
+
+    async DeleteLocalTmp (filename) {
+        await fs.unlinkSync(path.resolve('static/tmp/', filename))
     }
 }
 

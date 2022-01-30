@@ -67,8 +67,9 @@ class adminReferenceBooksController {
             try {
                 const fileUpload = new Resize();
                 const filename = await fileUpload.save(req.file.buffer,'inside',300,300,null);
-                const uploadDocs = await Yandex.UploadFile('',filename)
-                return res.status(200).json({ name: uploadDocs.key });
+                await Yandex.UploadFile('',filename)
+                await Yandex.DeleteLocalTmp(filename)
+                return res.status(200).json({ name: filename });
             } catch (e) {
                 next(e);
             }

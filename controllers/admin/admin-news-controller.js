@@ -23,8 +23,9 @@ class adminNewsController {
             try {
                 const fileUpload = new Resize();
                 const filename = await fileUpload.save(req.file.buffer,'inside',300,300,null);
-                const uploadDocs = await Yandex.UploadFile('',filename)
-                return res.status(200).json({ name: uploadDocs.key });
+                await Yandex.UploadFile('',filename)
+                await Yandex.DeleteLocalTmp(filename)
+                return res.status(200).json({ name: filename });
             } catch (e) {
                 next(e);
             }
@@ -39,10 +40,12 @@ class adminNewsController {
             try {
                 const fileUpload = new Resize();
                 const filename = await fileUpload.save(req.file.buffer,'inside',1000,1000,null);
-                const uploadDocs = await Yandex.UploadFile('',filename)
+                await Yandex.UploadFile('',filename)
                 const cropFileName = await fileUpload.save(req.file.buffer,'cover',120,120,'crop_' + filename);
                 await Yandex.UploadFile('',cropFileName)
-                return res.status(200).json({ name: uploadDocs.key });
+                await Yandex.DeleteLocalTmp(filename)
+                await Yandex.DeleteLocalTmp(cropFileName)
+                return res.status(200).json({ name: filename });
             } catch (e) {
                 next(e);
             }

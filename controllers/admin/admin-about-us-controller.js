@@ -36,10 +36,12 @@ class adminAboutUsController {
             try {
                 const fileUpload = new Resize();
                 const filename = await fileUpload.save(req.file.buffer,'inside',800,800,null);
-                const uploadDocs = await Yandex.UploadFile('',filename)
+                await Yandex.UploadFile('',filename)
                 const cropFileName = await fileUpload.save(req.file.buffer,'cover',120,120,'crop_' + filename);
                 await Yandex.UploadFile('',cropFileName)
-                return res.status(200).json({ name: uploadDocs.key });
+                await Yandex.DeleteLocalTmp(filename)
+                await Yandex.DeleteLocalTmp(cropFileName)
+                return res.status(200).json({ name: filename });
             } catch (e) {
                 next(e);
             }
