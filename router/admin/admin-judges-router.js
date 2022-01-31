@@ -32,6 +32,11 @@ router.post(`${Const.ADMIN_PATH_PREFIX}/judges-orders/save`,
     adminJudgesOrdersController.judges_orders_save
 );
 
+router.post(`${Const.ADMIN_PATH_PREFIX}/judges-orders/delete`,
+    authMiddleware,
+    adminJudgesOrdersController.judges_orders_delete
+);
+
 router.get(`${Const.ADMIN_PATH_PREFIX}/judges-orders`,
     authMiddleware,
     adminJudgesOrdersController.judges_orders_get

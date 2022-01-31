@@ -59,6 +59,15 @@ class adminJudgesOrdersController {
         }
     }
 
+    async judges_orders_delete(req, res, next) {
+        try {
+            const response = await adminJudgesOrdersService.judges_orders_delete(req.body.id);
+            return res.json(response);
+        } catch (e) {
+            next(e);
+        }
+    }
+
     async judges_orders_get(req, res, next) {
         const orderType = req.query.ordertype
         try {

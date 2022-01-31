@@ -1,6 +1,5 @@
 const JudgesOrders = require('../../models/judges-orders/judges-orders.js');
 const PeopleModel = require('../../models/reference-books/people.js');
-const {log} = require("sharp/lib/libvips");
 const Yandex = require("../../function/file-cloud");
 
 class adminJudgesOrdersService {
@@ -45,7 +44,13 @@ class adminJudgesOrdersService {
         try {
             const oldPeople = await JudgesOrders.findById(arr.data._id).select('judges')
             if(oldPeople.judges.length > 0){
-                await PeopleModel.updateMany({_id: {$in: oldPeople.judges}}, {orderId: '', rank_judges: ''})
+                const rank = arr.data.orderType.substring(5,0)
+                let body = {orderId: '', rank_judges: ''}
+                if(rank === 'cat_v') body.rank_judges = 'cat_1'
+                if(rank === 'cat_1') body.rank_judges = 'cat_2'
+                if(rank === 'cat_2') body.rank_judges = 'cat_3'
+                if(rank === 'cat_3') body.rank_judges = ''
+                await PeopleModel.updateMany({_id: {$in: oldPeople.judges}}, body)
             }
 
             if(arr.data.orderType.substr(-3) === 'app') {
@@ -65,8 +70,27 @@ class adminJudgesOrdersService {
         }
     }
 
-    async judges_orders_get(orderType) {
+    async judges_orders_delete(id) {
+        try {
+            const order = await JudgesOrders.findById(id)
+            const rank = order.orderType.substring(5,0)
+            let body = {orderId: '', rank_judges: ''}
+            if(rank === 'cat_v') body.rank_judges = 'cat_1'
+            if(rank === 'cat_1') body.rank_judges = 'cat_2'
+            if(rank === 'cat_2') body.rank_judges = 'cat_3'
+            if(rank === 'cat_3') body.rank_judges = ''
+            await PeopleModel.updateMany({_id: {$in: order.judges}}, body)
+            await JudgesOrders.findOneAndDelete({_id: id})
+            let delDocs = []
+            order.docs.map((i)=>{delDocs.push(i.doc)})
+            if(delDocs.length > 0){Yandex.DeleteFile(delDocs)}
+            return {status:200}
+        } catch (e) {
+            return {error: `Что-то пошло не так... Обратитесь к разработчику. ${e}`}
+        }
+    }
 
+    async judges_orders_get(orderType) {
         const orderForDel = await JudgesOrders.find({judges:{$size:0}}).select('docs')
         let delOrder = []
         let delDocs = []
@@ -80,45 +104,6 @@ class adminJudgesOrdersService {
         if (orderType) query.orderType = orderType
         return JudgesOrders.find(query).populate('judges').sort({orderType: 1}).lean();
     }
-
-    /*
-
-    async pools_save(arr) {
-        if(!arr.name) return {error: 'Не указано название бассейна'}
-        if(arr.name === '') return {error: 'Не указано название бассейна'}
-        if(!arr.address) return {error: 'Не указан адрес бассейна'}
-        if(arr.address === '') return {error: 'Не указан адрес бассейна'}
-
-        try {
-            arr.tmp = false
-            return await PoolsModel.findOneAndUpdate({_id: arr._id}, arr);
-        } catch (e) {
-            return {error: `Что-то пошло не так... Обратитесь к разработчику. ${e}`}
-        }
-    }
-
-    async pools_get() {
-        await PoolsModel.deleteMany({tmp: true})
-        return PoolsModel.find({view: true}).lean();
-    }
-
-    async people_create() {
-        const response = await PeopleModel.create({tmp: true});
-        return response._id
-    }
-
-    async people_id(id) {
-        return PeopleModel.findById(id);
-    }
-
-
-
-    async people_get() {
-        await PeopleModel.deleteMany({tmp: true})
-        return PeopleModel.find({}).sort({view: -1,surname: 1}).lean();
-    }
-*/
-
 }
 
 
