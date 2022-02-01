@@ -17,6 +17,7 @@ const uiNewsRouter = require('./router/ui/ui-news-router');
 const uiCompRouter = require('./router/ui/ui-comp-router');
 const uiCalendarPlanRouter = require('./router/ui/ui-calendar-plan-router');
 const uiTeamRouter = require('./router/ui/ui-team-router');
+const uiRusadaRouter = require('./router/ui/ui-rusada-router');
 const uiJudgesRouter = require('./router/ui/ui-judges-router');
 const uiAboutUsRouter = require('./router/ui/ui-about-us-router');
 const errorMiddleware = require('./middlewares/error-middleware');
@@ -50,6 +51,7 @@ app.use('/api', uiNewsRouter);
 app.use('/api', uiCompRouter);
 app.use('/api', uiCalendarPlanRouter);
 app.use('/api', uiTeamRouter);
+app.use('/api', uiRusadaRouter);
 app.use('/api', uiJudgesRouter);
 app.use('/api', uiAboutUsRouter);
 
