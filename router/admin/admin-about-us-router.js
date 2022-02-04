@@ -2,6 +2,7 @@ const Router = require('express').Router;
 const adminAboutUsController = require('../../controllers/admin/admin-about-us-controller');
 const authMiddleware = require('../../middlewares/auth-middleware');
 const docsUpload_MD = require("../../middlewares/docs-upload-middleware");
+const imgUpload_MD = require('../../middlewares/img-upload-middleware');
 const Const = require("../../const-keys/const");
 
 const router = new Router();
@@ -18,7 +19,7 @@ router.post(`${Const.ADMIN_PATH_PREFIX}/about-us/docs-create`,
 );
 
 router.post(`${Const.ADMIN_PATH_PREFIX}/about-us/img-create`,
-    docsUpload_MD.single('files'),
+    imgUpload_MD.single('files'),
     authMiddleware,
     adminAboutUsController.about_us_img_create
 );

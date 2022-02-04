@@ -1,14 +1,27 @@
 const multer = require('multer');
+const uuid = require("uuid");
 
-
-const maxSize = 4 * 1024 * 1024;
-
-const storage = multer.memoryStorage({
-    destination: function(req,file,cb){
-        cb(null,'')
+const storage = multer.diskStorage({
+    destination(req,file,cb){
+        cb(null,'static/tmp/')
+    },
+    filename(req,file,cb){
+        cb(null,uuid.v4() + file.originalname.slice(file.originalname.lastIndexOf(".")))
     }
 })
 
-const limits = { fileSize: maxSize }
+const limits = {
+    fileSize: 4 * 1024 * 1024
+}
 
-module.exports = multer({storage,limits});
+const imgTypes = ['image/png','image/jpeg','image/jpg']
+
+const fileFilter = (req,file,cb) => {
+    if(imgTypes.includes(file.mimetype)) {
+        cb(null,true)
+    }else{
+        cb(null,false)
+    }
+}
+
+module.exports = multer({limits,fileFilter,storage});

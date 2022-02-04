@@ -3,8 +3,7 @@ const adminReferenceBooksService = require('../../service/admin/admin-reference-
 const {validationResult} = require('express-validator');
 const ApiError = require('../../exceptions/api-error');
 const Resize = require("../../function/Resize");
-const Yandex = require('../../function/file-cloud')
-const checkUpload = require("../../function/check-upload");
+const FileUpload = require("../../function/file-cloud");
 
 
 class adminCompController {
@@ -29,13 +28,10 @@ class adminCompController {
     }
 
     async compAvatarCreate(req, res, next) {
-        const checkFile = checkUpload.checkUploadFile(req.file, 'image')
-        if(checkFile === 200){
+        if(req.file){
             try {
-                const fileUpload = new Resize();
-                const filename = await fileUpload.save(req.file.buffer,'inside',300,300,null);
-                await Yandex.UploadFile('',filename)
-                await Yandex.DeleteLocalTmp(filename)
+                const resize = new Resize();
+                const filename = await resize.save(req.file,'inside',300,300,null,true);
                 return res.status(200).json({ name: filename });
             } catch (e) {
                 next(e);
@@ -46,11 +42,10 @@ class adminCompController {
     }
 
     async compDocsCreate(req, res, next) {
-        const checkFile = checkUpload.checkUploadFile(req.file, 'docs')
-        if(checkFile === 200){
+        if(req.file){
             try {
-                const uploadDocs = await Yandex.UploadFile(req.file)
-                return res.json({doc: uploadDocs.key});
+                await FileUpload.Upload(req.file.filename)
+                return res.json({doc: req.file.filename});
             } catch (e) {
                 next(e);
             }

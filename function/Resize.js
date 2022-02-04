@@ -8,20 +8,22 @@ class Resize {
         this.folder = folder;
     }
 
-    async save(buffer,fit,width,height,name) {
+    async save(file,fit,width,height,name,del) {
+        const tmpFile = path.resolve(file.destination,file.filename)
         let filename = null;
         if(name){
             filename = name;
         }else{
             filename = Resize.filename();
         }
-        await sharp(buffer)
+        await sharp(tmpFile)
             .rotate()
             .resize(width, height, {
                 fit: fit,
                 background: { r: 229, g: 229, b: 229, alpha: 1 }
             })
-            .toFile('./static/tmp/' + filename)
+            .toFile(path.resolve('static/storage/',filename))
+        if(del){fs.unlinkSync(tmpFile)}
         return filename;
     }
     static filename() {

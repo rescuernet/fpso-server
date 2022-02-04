@@ -1,8 +1,6 @@
 const adminAboutUsService = require('../../service/admin/admin-about-us-service')
-const checkUpload = require("../../function/check-upload");
 const Resize = require("../../function/Resize");
-const Yandex = require("../../function/file-cloud");
-
+const FileUpload = require("../../function/file-cloud");
 
 
 class adminAboutUsController {
@@ -17,11 +15,10 @@ class adminAboutUsController {
     }
 
     async about_us_docs_create(req, res, next) {
-        const checkFile = checkUpload.checkUploadFile(req.file, 'docs')
-        if(checkFile === 200){
+        if(req.file){
             try {
-                const uploadDocs = await Yandex.UploadFile(req.file)
-                return res.json({doc: uploadDocs.key});
+                await FileUpload.Upload(req.file.filename)
+                return res.json({doc: req.file.filename});
             } catch (e) {
                 next(e);
             }
@@ -31,16 +28,11 @@ class adminAboutUsController {
     }
 
     async about_us_img_create(req, res, next) {
-        const checkFile = checkUpload.checkUploadFile(req.file, 'image')
-        if(checkFile === 200){
+        if(req.file){
             try {
-                const fileUpload = new Resize();
-                const filename = await fileUpload.save(req.file.buffer,'inside',800,800,null);
-                await Yandex.UploadFile('',filename)
-                const cropFileName = await fileUpload.save(req.file.buffer,'cover',120,120,'crop_' + filename);
-                await Yandex.UploadFile('',cropFileName)
-                await Yandex.DeleteLocalTmp(filename)
-                await Yandex.DeleteLocalTmp(cropFileName)
+                const resize = new Resize();
+                const filename = await resize.save(req.file,'inside',800,800,null,false);
+                await resize.save(req.file,'cover',120,120,'crop_' + filename,true);
                 return res.status(200).json({ name: filename });
             } catch (e) {
                 next(e);

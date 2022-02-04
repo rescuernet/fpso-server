@@ -20,7 +20,7 @@ class adminTeamController {
         const checkFile = checkUpload.checkUploadFile(req.file, 'docs')
         if(checkFile === 200){
             try {
-                const uploadDocs = await Yandex.UploadFile(req.file)
+                const uploadDocs = await Yandex.UploadFile(req.file.filename)
                 return res.json({doc: uploadDocs.key});
             } catch (e) {
                 next(e);

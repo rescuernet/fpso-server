@@ -1,4 +1,4 @@
-const Yandex = require("../../function/file-cloud");
+const FileCloud = require("../../function/file-cloud");
 const Blocking = require("../../models/blocking/blocking");
 
 
@@ -11,7 +11,7 @@ class adminOtherController {
         const arr = req.body.mediaDelTmp
         try {
             if(arr && arr.length > 0){
-                Yandex.DeleteFile(arr)
+                FileCloud.Delete(arr)
             }
             return res.json({status: 200});
         } catch (e) {

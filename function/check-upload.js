@@ -1,5 +1,8 @@
 class checkUpload {
     checkUploadFile = (data,type) => {
+        if(!data){
+            return 401
+        }
 
         if(type === 'image'){
             if(data.mimetype !== ('image/jpeg' || 'image/jpg')){
@@ -17,7 +20,7 @@ class checkUpload {
                 case "application/vnd.ms-excel": return 200
                 case "application/octet-stream": return 200
                 default: return 401
-            };
+            }
         }
 
     }
