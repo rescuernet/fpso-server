@@ -15,6 +15,7 @@ class checkUpload {
                 case "application/msword": return 200
                 case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": return 200
                 case "application/vnd.ms-excel": return 200
+                case "application/octet-stream": return 200
                 default: return 401
             };
         }
