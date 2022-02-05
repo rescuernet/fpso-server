@@ -1,6 +1,5 @@
 const JudgesOrders = require('../../models/judges-orders/judges-orders.js');
 const PeopleModel = require('../../models/reference-books/people.js');
-const Yandex = require("../../function/file-cloud");
 const FileCloud = require("../../function/file-cloud");
 
 class adminJudgesOrdersService {
@@ -17,8 +16,6 @@ class adminJudgesOrdersService {
     async judges_orders_people_get(orderType) {
         const rank = orderType.substring(5,0)
         const doc_type = orderType.substr(-3)
-
-        /*console.log('rank: ' + rank + ' doc_type: ' + doc_type)*/
 
         let query = {
             view: true,

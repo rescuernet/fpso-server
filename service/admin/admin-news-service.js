@@ -42,16 +42,14 @@ class adminNewsService {
     async news__delete(id) {
         let mediaDel = [];
         const newsOne = await NewsModel.findById(id);
-        mediaDel.push(newsOne.avatar)
+        if(newsOne.avatar){mediaDel.push(newsOne.avatar)}
         newsOne.images.map((i)=>{
             mediaDel.push(i)
         })
         newsOne.docs.map((i)=>{
             mediaDel.push(i.doc)
         })
-
         await NewsModel.findOneAndDelete({_id: id})
-
         if(mediaDel && mediaDel.length > 0){
             FileCloud.Delete(mediaDel)
         }
