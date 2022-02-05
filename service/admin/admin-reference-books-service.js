@@ -1,6 +1,6 @@
 const PoolsModel = require('../../models/reference-books/pools.js');
 const PeopleModel = require('../../models/reference-books/people.js');
-const Yandex = require("../../function/file-cloud");
+const FileCloud = require("../../function/file-cloud");
 
 class adminReferenceBooksService {
 
@@ -56,7 +56,7 @@ class adminReferenceBooksService {
         if(arr.data.patronymic.length < 3) return {error: 'Отчество не менее 3-х символов'}
         try {
             if(arr.mediaDel && arr.mediaDel.length > 0){
-                Yandex.DeleteFile(arr.mediaDel)
+                FileCloud.Delete(arr.mediaDel)
             }
             arr.data.tmp = false
             return await PeopleModel.findOneAndUpdate({_id: arr.data._id}, arr.data);

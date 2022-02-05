@@ -1,9 +1,8 @@
 const adminNewsService = require('../../service/admin/admin-news-service');
 const {validationResult} = require('express-validator');
 const ApiError = require('../../exceptions/api-error');
-const Yandex = require('../../function/file-cloud')
 const Resize = require("../../function/Resize");
-const checkUpload = require("../../function/check-upload");
+const FileUpload = require("../../function/file-cloud");
 
 
 class adminNewsController {
@@ -18,13 +17,10 @@ class adminNewsController {
     }
 
     async news__avatarCreate(req, res, next) {
-        const checkFile = checkUpload.checkUploadFile(req.file, 'image')
-        if(checkFile === 200){
+        if(req.file){
             try {
-                const fileUpload = new Resize();
-                const filename = await fileUpload.save(req.file.buffer,'inside',300,300,null);
-                await Yandex.UploadFile('',filename)
-                await Yandex.DeleteLocalTmp(filename)
+                const resize = new Resize();
+                const filename = await resize.save(req.file,'inside',300,300,null,true);
                 return res.status(200).json({ name: filename });
             } catch (e) {
                 next(e);
@@ -35,16 +31,11 @@ class adminNewsController {
     }
 
     async news__imageCreate(req, res, next) {
-        const checkFile = checkUpload.checkUploadFile(req.file, 'image')
-        if(checkFile === 200){
+        if(req.file){
             try {
-                const fileUpload = new Resize();
-                const filename = await fileUpload.save(req.file.buffer,'inside',1000,1000,null);
-                await Yandex.UploadFile('',filename)
-                const cropFileName = await fileUpload.save(req.file.buffer,'cover',120,120,'crop_' + filename);
-                await Yandex.UploadFile('',cropFileName)
-                await Yandex.DeleteLocalTmp(filename)
-                await Yandex.DeleteLocalTmp(cropFileName)
+                const resize = new Resize();
+                const filename = await resize.save(req.file,'inside',1000,1000,null,false);
+                await resize.save(req.file,'cover',120,120,'crop_' + filename,true);
                 return res.status(200).json({ name: filename });
             } catch (e) {
                 next(e);
@@ -55,11 +46,10 @@ class adminNewsController {
     }
 
     async news__docsCreate(req, res, next) {
-        const checkFile = checkUpload.checkUploadFile(req.file, 'docs')
-        if(checkFile === 200){
+        if(req.file){
             try {
-                const uploadDocs = await Yandex.UploadFile(req.file)
-                return res.json({doc: uploadDocs.key});
+                await FileUpload.Upload(req.file.filename)
+                return res.json({doc: req.file.filename});
             } catch (e) {
                 next(e);
             }

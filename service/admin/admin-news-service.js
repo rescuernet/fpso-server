@@ -1,7 +1,7 @@
 const NewsModel = require('../../models/news/news-model.js');
 const fs = require("fs");
 const dateFns = require('date-fns')
-const Yandex = require('../../function/file-cloud')
+const FileCloud = require("../../function/file-cloud");
 
 
 class adminNewsService {
@@ -30,7 +30,7 @@ class adminNewsService {
 
         try {
             if(arr.mediaDel && arr.mediaDel.length > 0){
-                Yandex.DeleteFile(arr.mediaDel)
+                FileCloud.Delete(arr.mediaDel)
             }
             arr.data.tmpNews = false
             return await NewsModel.findOneAndUpdate({_id: arr.data._id}, arr.data);
@@ -53,7 +53,7 @@ class adminNewsService {
         await NewsModel.findOneAndDelete({_id: id})
 
         if(mediaDel && mediaDel.length > 0){
-            Yandex.DeleteFile(mediaDel)
+            FileCloud.Delete(mediaDel)
         }
     }
 

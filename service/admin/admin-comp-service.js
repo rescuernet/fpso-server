@@ -1,7 +1,7 @@
 const CompModel = require('../../models/competitions/competitions-model.js');
 const fs = require("fs");
 const dateFns = require("date-fns");
-const Yandex = require("../../function/file-cloud");
+const FileCloud = require("../../function/file-cloud");
 
 
 class adminCompService {
@@ -47,7 +47,7 @@ class adminCompService {
 
         try {
             if(arr.mediaDel && arr.mediaDel.length > 0){
-                Yandex.DeleteFile(arr.mediaDel)
+                FileCloud.Delete(arr.mediaDel)
             }
             arr.data.tmp = false
             return await CompModel.findOneAndUpdate({_id: arr.data._id}, arr.data);
@@ -77,7 +77,7 @@ class adminCompService {
         await CompModel.findOneAndDelete({_id: id})
 
         if(mediaDel && mediaDel.length > 0){
-            Yandex.DeleteFile(mediaDel)
+            FileCloud.Delete(mediaDel)
         }
     }
 

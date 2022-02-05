@@ -1,7 +1,5 @@
 const adminRusadaService = require('../../service/admin/admin-rusada-service')
-const checkUpload = require("../../function/check-upload");
-const Resize = require("../../function/Resize");
-const Yandex = require("../../function/file-cloud");
+const FileUpload = require("../../function/file-cloud");
 
 
 
@@ -17,11 +15,10 @@ class adminRusadaController {
     }
 
     async rusada_docs_create(req, res, next) {
-        const checkFile = checkUpload.checkUploadFile(req.file, 'docs')
-        if(checkFile === 200){
+        if(req.file){
             try {
-                const uploadDocs = await Yandex.UploadFile(req.file)
-                return res.json({doc: uploadDocs.key});
+                await FileUpload.Upload(req.file.filename)
+                return res.json({doc: req.file.filename});
             } catch (e) {
                 next(e);
             }

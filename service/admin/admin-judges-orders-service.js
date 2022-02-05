@@ -1,6 +1,7 @@
 const JudgesOrders = require('../../models/judges-orders/judges-orders.js');
 const PeopleModel = require('../../models/reference-books/people.js');
 const Yandex = require("../../function/file-cloud");
+const FileCloud = require("../../function/file-cloud");
 
 class adminJudgesOrdersService {
 
@@ -60,9 +61,9 @@ class adminJudgesOrdersService {
             await PeopleModel.updateMany({_id: {$in: arr.data.judges}}, {orderId: arr.data._id, rank_judges: arr.data.orderType.substring(5,0)})
 
             if(arr.mediaDel && arr.mediaDel.length > 0){
-                Yandex.DeleteFile(arr.mediaDel)
+                FileCloud.Delete(arr.mediaDel)
             }
-
+            arr.data.tmp = false
             const result = await JudgesOrders.findOneAndUpdate({_id: arr.data._id}, arr.data);
             return result
         } catch (e) {
@@ -83,7 +84,7 @@ class adminJudgesOrdersService {
             await JudgesOrders.findOneAndDelete({_id: id})
             let delDocs = []
             order.docs.map((i)=>{delDocs.push(i.doc)})
-            if(delDocs.length > 0){Yandex.DeleteFile(delDocs)}
+            if(delDocs.length > 0){FileCloud.Delete(delDocs)}
             return {status:200}
         } catch (e) {
             return {error: `Что-то пошло не так... Обратитесь к разработчику. ${e}`}
@@ -96,7 +97,7 @@ class adminJudgesOrdersService {
         let delDocs = []
         orderForDel.map((i)=>{delOrder.push(i.id);i.docs.map((ii)=>{delDocs.push(ii.doc)})})
 
-        if(delDocs.length > 0){Yandex.DeleteFile(delDocs)}
+        if(delDocs.length > 0){FileCloud.Delete(delDocs)}
 
         await JudgesOrders.deleteMany({$or:[{tmp:true},{_id:{$in:delOrder}}]})
 

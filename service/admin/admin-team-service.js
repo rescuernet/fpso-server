@@ -1,5 +1,5 @@
 const TeamModel = require('../../models/team/team-model.js');
-const Yandex = require("../../function/file-cloud");
+const FileCloud = require("../../function/file-cloud");
 
 class adminTeamService {
 
@@ -17,7 +17,7 @@ class adminTeamService {
 
         try {
             if(arr.mediaDel && arr.mediaDel.length > 0){
-                Yandex.DeleteFile(arr.mediaDel)
+                FileCloud.Delete(arr.mediaDel)
             }
             return await TeamModel.findOneAndUpdate({_id: arr.data._id}, arr.data);
 

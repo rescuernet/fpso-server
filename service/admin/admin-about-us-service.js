@@ -1,5 +1,5 @@
 const AboutUsModel = require('../../models/about-us/about-us-model.js');
-const Yandex = require("../../function/file-cloud");
+const FileCloud = require("../../function/file-cloud");
 
 class adminAboutUsService {
 
@@ -17,7 +17,7 @@ class adminAboutUsService {
 
         try {
             if(arr.mediaDel && arr.mediaDel.length > 0){
-                Yandex.DeleteFile(arr.mediaDel)
+                FileCloud.Delete(arr.mediaDel)
             }
             return await AboutUsModel.findOneAndUpdate({_id: arr.data._id}, arr.data);
 

@@ -1,7 +1,5 @@
 const adminReferenceBooksService = require('../../service/admin/admin-reference-books-service')
-const checkUpload = require("../../function/check-upload");
 const Resize = require("../../function/Resize");
-const Yandex = require("../../function/file-cloud");
 
 
 
@@ -62,13 +60,10 @@ class adminReferenceBooksController {
     }
 
     async people_avatar_create(req, res, next) {
-        const checkFile = checkUpload.checkUploadFile(req.file, 'image')
-        if(checkFile === 200){
+        if(req.file){
             try {
-                const fileUpload = new Resize();
-                const filename = await fileUpload.save(req.file.buffer,'inside',300,300,null);
-                await Yandex.UploadFile('',filename)
-                await Yandex.DeleteLocalTmp(filename)
+                const resize = new Resize();
+                const filename = await resize.save(req.file,'inside',300,300,null,true);
                 return res.status(200).json({ name: filename });
             } catch (e) {
                 next(e);
