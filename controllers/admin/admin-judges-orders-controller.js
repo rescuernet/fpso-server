@@ -42,7 +42,7 @@ class adminJudgesOrdersController {
                 next(e);
             }
         }else{
-            return res.status(401).json({error: 'Ошибка загрузки'});
+            return res.json({error: 'Ошибка загрузки'});
         }
     }
 

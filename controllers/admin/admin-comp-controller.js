@@ -37,7 +37,7 @@ class adminCompController {
                 next(e);
             }
         }else{
-            return res.status(401).json({error: 'Ошибка загрузки'});
+            return res.json({error: 'Ошибка загрузки'});
         }
     }
 
@@ -50,7 +50,7 @@ class adminCompController {
                 next(e);
             }
         }else{
-            return res.status(401).json({error: 'Ошибка загрузки'});
+            return res.json({error: 'Ошибка загрузки'});
         }
     }
 
