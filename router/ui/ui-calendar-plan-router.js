@@ -5,7 +5,7 @@ const uiCalendarPlanController = require('../../controllers/ui/ui-calendar-plan-
 const router = new Router();
 
 
-router.get(`/competitions/calendar-plan`, uiCalendarPlanController.calendar_plan_get);
+router.get(`/calendar-plan`, uiCalendarPlanController.calendar_plan_get);
 
 
 

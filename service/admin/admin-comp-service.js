@@ -25,9 +25,6 @@ class adminCompService {
         if(!arr.data.textMain) return {error: 'Не указан текст, описывающий соревнования'}
         if(arr.data.textMain && arr.data.textMain.length < 5) return {error: 'Минимальная длина текста соревнований 5 символов'}
 
-        const candidate = await CompModel.find({ headerFirst: arr.data.headerFirst, _id: { $ne:  arr.data._id } }).lean()
-        if(candidate.length) return {error: `Соревнование с таким заголовком уже существует`}
-
         const res = arr.data.docs.map((i) => {
             if(i.title === ''){
                 return {error: `Не указано название прикрепленного документа в разделе общих документов соревнования`}
