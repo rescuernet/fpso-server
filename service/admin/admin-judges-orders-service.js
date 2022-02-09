@@ -71,13 +71,15 @@ class adminJudgesOrdersService {
     async judges_orders_delete(id) {
         try {
             const order = await JudgesOrders.findById(id)
-            const rank = order.orderType.substring(5,0)
-            let body = {orderId: '', rank_judges: ''}
-            if(rank === 'cat_0') body.rank_judges = 'cat_1'
-            if(rank === 'cat_1') body.rank_judges = 'cat_2'
-            if(rank === 'cat_2') body.rank_judges = 'cat_3'
-            if(rank === 'cat_3') body.rank_judges = ''
-            await PeopleModel.updateMany({_id: {$in: order.judges}}, body)
+            if(order.orderType.substr(-3) === 'app'){
+                const rank = order.orderType.substring(5,0)
+                let body = {orderId: '', rank_judges: ''}
+                if(rank === 'cat_0') body.rank_judges = 'cat_1'
+                if(rank === 'cat_1') body.rank_judges = 'cat_2'
+                if(rank === 'cat_2') body.rank_judges = 'cat_3'
+                if(rank === 'cat_3') body.rank_judges = ''
+                await PeopleModel.updateMany({_id: {$in: order.judges}}, body)
+            }
             await JudgesOrders.findOneAndDelete({_id: id})
             let delDocs = []
             order.docs.map((i)=>{delDocs.push(i.doc)})
@@ -100,7 +102,7 @@ class adminJudgesOrdersService {
 
         const query = {}
         if (orderType) query.orderType = orderType
-        return JudgesOrders.find(query).populate('judges').sort({orderType: 1,updatedAt:-1}).lean();
+        return JudgesOrders.find(query).populate('judges').sort({orderType: 1,dateOrder:-1}).lean();
     }
 }
 
