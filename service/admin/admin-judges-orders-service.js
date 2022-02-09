@@ -22,7 +22,7 @@ class adminJudgesOrdersService {
             role: {$in:['judges']}
         }
 
-        if(rank === 'cat_v'){query.rank_judges = 'cat_1'}
+        if(rank === 'cat_0'){query.rank_judges = 'cat_1'}
         if(rank === 'cat_1'){query.rank_judges = 'cat_2'}
         if(rank === 'cat_2'){query.rank_judges = 'cat_3'}
         if(rank === 'cat_3'){query.rank_judges = ''}
@@ -44,7 +44,7 @@ class adminJudgesOrdersService {
             if(oldPeople.judges.length > 0){
                 const rank = arr.data.orderType.substring(5,0)
                 let body = {orderId: '', rank_judges: ''}
-                if(rank === 'cat_v') body.rank_judges = 'cat_1'
+                if(rank === 'cat_0') body.rank_judges = 'cat_1'
                 if(rank === 'cat_1') body.rank_judges = 'cat_2'
                 if(rank === 'cat_2') body.rank_judges = 'cat_3'
                 if(rank === 'cat_3') body.rank_judges = ''
@@ -73,7 +73,7 @@ class adminJudgesOrdersService {
             const order = await JudgesOrders.findById(id)
             const rank = order.orderType.substring(5,0)
             let body = {orderId: '', rank_judges: ''}
-            if(rank === 'cat_v') body.rank_judges = 'cat_1'
+            if(rank === 'cat_0') body.rank_judges = 'cat_1'
             if(rank === 'cat_1') body.rank_judges = 'cat_2'
             if(rank === 'cat_2') body.rank_judges = 'cat_3'
             if(rank === 'cat_3') body.rank_judges = ''
@@ -100,7 +100,7 @@ class adminJudgesOrdersService {
 
         const query = {}
         if (orderType) query.orderType = orderType
-        return JudgesOrders.find(query).populate('judges').sort({orderType: 1}).lean();
+        return JudgesOrders.find(query).populate('judges').sort({orderType: 1,updatedAt:-1}).lean();
     }
 }
 

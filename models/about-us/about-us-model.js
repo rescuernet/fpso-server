@@ -2,7 +2,7 @@ const {Schema, model} = require('mongoose');
 
 const AboutUs = new Schema({
     header: {type: String, default: '', trim: true},
-    text: {type: String, default: '', trim: true},
+    text: {type: String, default: ''},
     address: {type: String, default: '', trim: true},
     telephone: {type: String, default: '', trim: true},
     email: {type: String, default: '', trim: true},

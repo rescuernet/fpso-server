@@ -11,7 +11,7 @@ class uiJudgesController {
                 tmp: false
             }
             if (orderType) query.orderType = orderType
-            const data = await JudgesOrders.find(query).populate('judges').sort({orderType: 1}).lean();
+            const data = await JudgesOrders.find(query).populate('judges').sort({orderType: 1,updatedAt:-1}).lean();
             return res.json(data);
         } catch (e) {
             next(e);
