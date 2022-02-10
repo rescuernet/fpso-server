@@ -7,7 +7,7 @@ class uiCompService {
    constructor( CompModel) {
         this.compModel = CompModel
    }
-    async getComp(page = 1,limit = 10) {
+    async getComp(page = 1,limit = 9) {
         const date = dateFns.format(new Date(Date.now()), 'yyyy-MM-dd')
         const query = {
             published: true,
